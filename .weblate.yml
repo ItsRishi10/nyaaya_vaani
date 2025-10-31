@@ -1,0 +1,11 @@
+project:
+  name: nyaaya_vaani
+  description: "Weblate configuration for Nyaaya Vaani Flutter app"
+
+components:
+  - name: app_strings
+    file_mask: "lib/l10n/intl_%two_letters_code%.arb"
+    source_file: "lib/l10n/intl_en.arb"
+    file_filters:
+      - "intl_{locale}.arb"
+    vcs: true
