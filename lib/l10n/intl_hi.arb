@@ -1,0 +1,38 @@
+{
+  "@@locale": "hi",
+  "app_title": "न्याय वाणी",
+
+  "legal_services": "कानूनी सेवाएँ",
+  "nyaaya_whistle": "न्याय व्हिसल",
+  "statistics": "आंकड़े और रणनीति",
+  "youth": "युवा संघ",
+  "legal_library": "कानूनी पुस्तकालय",
+
+  "upload_image": "तस्विर अपलोड करें",
+  "available_advocates": "उपलब्ध वकील",
+  "request_help": "मदद का अनुरोध करें",
+
+  "complaint_details": "शिकायत विवरण",
+  "selected_location": "चयनित स्थान",
+  "location_reporting": "स्थान रिपोर्टिंग (स्थान चिह्नित करने के लिए मानचित्र पर टैप करें)",
+  "submit_complaint": "शिकायत दर्ज करें",
+  "complaint_submit": "शिकायत प्रस्तुत करें",
+
+  "poll_results": "मतदान परिणाम",
+  "sentiment_analysis": "भाव विश्लेषण",
+  "upcoming_events": "आगामी कार्यक्रम",
+  "gamification": "खेल तत्व",
+
+  "ai_assistant": "एआई सहायक",
+  "ai_prediction": "एआई भविष्यवाणी: जनता की राय समर्थन की ओर स्थानांतरित होने की संभावना है।",
+
+  "oppose": "विरोध",
+  "support": "सहायता",
+  "join": "जोड़ना",
+  "points": "अंक",
+  "badge": "बैज: सिविक स्टार, स्वयंसेवक नायक",
+
+  "library_text": "जागरूकता और सीखने के लिए प्रमुख भारतीय कानूनी संसाधनों का एक सरलीकृत भंडार",
+  "library_search": "कानूनी संसाधन खोजें",
+  "no_result": "कोई परिणाम नहीं मिला"
+}

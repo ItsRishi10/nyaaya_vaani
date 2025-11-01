@@ -1,13 +1,45 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 class TranslationService {
-  // Update this URL to match your backend server
-  // For Android emulator: use 'http://10.0.2.2:8000'
-  // For iOS simulator: use 'http://localhost:8000'
-  // For physical device: use your computer's local IP (e.g., 'http://192.168.1.100:8000')
-  static const String baseUrl = 'http://localhost:8000';
+  // ===== CONFIGURATION FOR PHYSICAL ANDROID DEVICE =====
+  // If you're using a physical Android device (not emulator), 
+  // set this to your computer's local IP address.
+  // Leave as null to auto-detect (uses 10.0.2.2 for emulator, localhost for other platforms)
+  // 
+  // To find your computer's IP on Windows:
+  //   1. Open PowerShell
+  //   2. Run: ipconfig
+  //   3. Look for "IPv4 Address" under your active network adapter (usually Wi-Fi or Ethernet)
+  //   4. It will look like: 192.168.1.xxx or 192.168.0.xxx
+  //
+  // Example: '192.168.1.100'
+  static const String? physicalDeviceIp = '192.168.1.9'; // Change this to your IP if using physical device
+  
+  // Automatically detect the correct base URL based on platform
+  static String get baseUrl {
+    // If physical device IP is configured, use it for Android
+    if (Platform.isAndroid && physicalDeviceIp != null && physicalDeviceIp!.isNotEmpty) {
+      return 'http://$physicalDeviceIp:8000';
+    }
+    
+    if (kIsWeb) {
+      return 'http://localhost:8000';
+    }
+    
+    if (Platform.isAndroid) {
+      // Android emulator uses 10.0.2.2 to access host machine's localhost
+      return 'http://10.0.2.2:8000';
+    } else if (Platform.isIOS) {
+      return 'http://localhost:8000';
+    }
+    
+    // Default fallback
+    return 'http://localhost:8000';
+  }
   
   // Cache for translations to avoid repeated API calls
   final Map<String, String> _translationCache = {};
@@ -44,9 +76,15 @@ class TranslationService {
         print('Translation API error: ${response.statusCode} - ${response.body}');
         return text; // Return original text on error
       }
+    } on SocketException catch (e) {
+      print('Translation service error: Connection refused. Is the backend server running at $baseUrl?');
+      print('Error details: $e');
+      // Re-throw to let caller know connection failed
+      throw Exception('Translation server is not available. Please start the backend server.');
     } catch (e) {
       print('Translation service error: $e');
-      return text; // Return original text on error
+      // Re-throw other exceptions too
+      throw Exception('Translation failed: $e');
     }
   }
 
@@ -98,12 +136,25 @@ class TranslationService {
           result[text] = text;
         }
       }
+    } on SocketException catch (e) {
+      print('Translation service error: Connection refused. Is the backend server running at $baseUrl?');
+      print('Error details: $e');
+      // Return original texts on error, but throw to notify caller
+      for (final text in textsToTranslate) {
+        result[text] = text;
+      }
+      throw Exception('Translation server is not available. Please start the backend server.');
     } catch (e) {
       print('Translation service error: $e');
       // Return original texts on error
       for (final text in textsToTranslate) {
         result[text] = text;
       }
+      // Re-throw to notify caller
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Translation failed: $e');
     }
 
     return result;

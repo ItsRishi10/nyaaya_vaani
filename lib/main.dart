@@ -24,34 +24,34 @@ class AppLocalizations extends ChangeNotifier {
 
   // Base English dictionary (keep only English, Hindi will come from backend)
   final Map<String, String> englishTexts = {
-    "app_title": "Nyaaya Vaani",
-    "legal_services": "Legal Services",
-    "nyaaya_whistle": "Nyaaya Whistle",
-    "statistics": "Statistics & Strategy",
-    "youth": "Youth Association",
-    "legal_library": "Legal Library",
-    "upload_image": "Upload Image",
-    "available_advocates": "Available Advocates",
-    "request_help": "Request Help",
-    "complaint_details": "Complaint Details",
-    "selected_location": "Selected Location",
-    "location_reporting": "Location Reporting (tap map to mark location)",
-    "submit_complaint": "Submit a Complaint",
-    "complaint_submit": "Submit Complaint",
-    "poll_results": "Poll Results",
-    "sentiment_analysis": "Sentiment Analysis",
-    "upcoming_events": "Upcoming Events",
-    "gamification": "Gamification",
-    "ai_assistant": "AI Assistant",
-    "ai_prediction": "AI Prediction: Public opinion likely to shift towards SUPPORT.",
-    "oppose": "Oppose",
-    "support": "Support",
-    "join": "Join",
-    "points": "Points",
-    "badge": "Badges: Civic Star, Volunteer Hero",
-    "library_text": "A simplified repository of key Indian legal resources for awareness and learning",
-    "library_search": "Search legal resources",
-    "no_result": "No results found",
+      "app_title": "Nyaaya Vaani",
+      "legal_services": "Legal Services",
+      "nyaaya_whistle": "Nyaaya Whistle",
+      "statistics": "Statistics & Strategy",
+      "youth": "Youth Association",
+      "legal_library": "Legal Library",
+      "upload_image": "Upload Image",
+      "available_advocates": "Available Advocates",
+      "request_help": "Request Help",
+      "complaint_details": "Complaint Details",
+      "selected_location": "Selected Location",
+      "location_reporting": "Location Reporting (tap map to mark location)",
+      "submit_complaint": "Submit a Complaint",
+      "complaint_submit": "Submit Complaint",
+      "poll_results": "Poll Results",
+      "sentiment_analysis": "Sentiment Analysis",
+      "upcoming_events": "Upcoming Events",
+      "gamification": "Gamification",
+      "ai_assistant": "AI Assistant",
+      "ai_prediction": "AI Prediction: Public opinion likely to shift towards SUPPORT.",
+      "oppose": "Oppose",
+      "support": "Support",
+      "join": "Join",
+      "points": "Points",
+      "badge": "Badges: Civic Star, Volunteer Hero",
+      "library_text": "A simplified repository of key Indian legal resources for awareness and learning",
+      "library_search": "Search legal resources",
+      "no_result": "No results found",
     // Additional hardcoded strings found in the app
     "logout": "Logout",
     "admin_panel": "Admin Panel (placeholder)",
@@ -130,7 +130,7 @@ class AppLocalizations extends ChangeNotifier {
     if (isHindi) {
       // Switching back to English
       isHindi = false;
-      notifyListeners();
+    notifyListeners();
       return;
     }
     
@@ -161,7 +161,10 @@ class AppLocalizations extends ChangeNotifier {
     } catch (e) {
       print('Error translating: $e');
       _isTranslating = false;
+      isHindi = false; // Revert to English on error
       notifyListeners();
+      // Show error message to user
+      rethrow; // Let the caller handle the error display
     }
   }
 
@@ -288,7 +291,20 @@ class DashboardPage extends StatelessWidget {
                 onPressed: loc.isTranslating
                     ? null
                     : () async {
-                        await context.read<AppLocalizations>().toggleLanguage();
+                        try {
+                          await context.read<AppLocalizations>().toggleLanguage();
+                        } catch (e) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Translation failed: Translation server is not available. Please start the backend server at ${TranslationService.baseUrl}',
+                              ),
+                              backgroundColor: Colors.red,
+                              duration: const Duration(seconds: 5),
+                            ),
+                          );
+                        }
                       },
               );
             },
