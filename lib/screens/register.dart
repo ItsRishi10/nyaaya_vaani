@@ -67,12 +67,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 validator: (v) => (v ?? '').isEmpty ? 'Enter password' : null,
               ),
               const SizedBox(height: 16),
-              // Optional admin creation code (for testing/demo). Enter the secret key to make this user an admin.
-              TextFormField(
-                controller: _adminCode,
-                decoration: const InputDecoration(labelText: 'Admin code (optional)'),
-              ),
-              const SizedBox(height: 12),
               if (_error != null)
                 Text(_error!, style: TextStyle(color: Colors.red)),
               ElevatedButton(
