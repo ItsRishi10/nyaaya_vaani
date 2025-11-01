@@ -9,85 +9,163 @@ import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart'; // NEW for state management
 import 'services/auth_service.dart';
+import 'services/translation_service.dart';
 import 'screens/login.dart';
 import 'widgets/side_nav.dart';
 
 // ----------------- Localization -----------------
 class AppLocalizations extends ChangeNotifier {
   bool isHindi = false;
+  bool _isTranslating = false;
+  final TranslationService _translationService = TranslationService();
+  
+  // Cache for Hindi translations
+  final Map<String, String> _hindiTranslations = {};
 
-  // Dictionary
-  final Map<String, Map<String, String>> translations = {
-    "en": {
-      "app_title": "Nyaaya Vaani",
-      "legal_services": "Legal Services",
-      "nyaaya_whistle": "Nyaaya Whistle",
-      "statistics": "Statistics & Strategy",
-      "youth": "Youth Association",
-      "legal_library": "Legal Library",
-      "upload_image": "Upload Image",
-      "available_advocates": "Available Advocates",
-      "request_help": "Request Help",
-      "complaint_details": "Complaint Details",
-      "selected_location": "Selected Location",
-      "location_reporting": "Location Reporting (tap map to mark location)",
-      "submit_complaint": "Submit a Complaint",
-      "complaint_submit": "Submit Complaint",
-      "poll_results": "Poll Results",
-      "sentiment_analysis": "Sentiment Analysis",
-      "upcoming_events": "Upcoming Events",
-      "gamification": "Gamification",
-      "ai_assistant": "AI Assistant",
-      "ai_prediction": "AI Prediction: Public opinion likely to shift towards SUPPORT.",
-      "oppose": "Oppose",
-      "support": "Support",
-      "join": "Join",
-      "points": "Points",
-      "badge": "Badges: Civic Star, Volunteer Hero",
-      "library_text": "A simplified repository of key Indian legal resources for awareness and learning",
-      "library_search": "Search legal resources",
-      "no_result": "No results found",
-    },
-    "hi": {
-      "app_title": "न्याय वाणी",
-      "legal_services": "कानूनी सेवाएँ",
-      "nyaaya_whistle": "न्याय व्हिसल",
-      "statistics": "आंकड़े और रणनीति",
-      "youth": "युवा संघ",
-      "legal_library": "कानूनी पुस्तकालय",
-      "upload_image": "तस्विर अपलोड करें",
-      "available_advocates": "उपलब्ध वकील",
-      "request_help": "मदद का अनुरोध करें",
-      "complaint_details": "शिकायत विवरण",
-      "selected_location": "चयनित स्थान",
-      "location_reporting": "स्थान रिपोर्टिंग (स्थान चिह्नित करने के लिए मानचित्र पर टैप करें)",
-      "submit_complaint": "शिकायत दर्ज करें",
-      "complaint_submit": "शिकायत प्रस्तुत करें",
-      "poll_results": "मतदान परिणाम",
-      "sentiment_analysis": "भाव विश्लेषण",
-      "upcoming_events": "आगामी कार्यक्रम",
-      "gamification": "खेल तत्व",
-      "ai_assistant": "एआई सहायक",
-      "ai_prediction": "एआई भविष्यवाणी: जनता की राय समर्थन की ओर स्थानांतरित होने की संभावना है।",
-      "oppose": "विरोध",
-      "support": "सहायता",
-      "join": "जोड़ना",
-      "points": "अंक",
-      "badge": "बैज: सिविक स्टार, स्वयंसेवक नायक",
-      "library_text": "जागरूकता और सीखने के लिए प्रमुख भारतीय कानूनी संसाधनों का एक सरलीकृत भंडार",
-      "library_search": "कानूनी संसाधन खोजें",
-      "no_result": "कोई परिणाम नहीं मिला",
-    }
+  // Base English dictionary (keep only English, Hindi will come from backend)
+  final Map<String, String> englishTexts = {
+    "app_title": "Nyaaya Vaani",
+    "legal_services": "Legal Services",
+    "nyaaya_whistle": "Nyaaya Whistle",
+    "statistics": "Statistics & Strategy",
+    "youth": "Youth Association",
+    "legal_library": "Legal Library",
+    "upload_image": "Upload Image",
+    "available_advocates": "Available Advocates",
+    "request_help": "Request Help",
+    "complaint_details": "Complaint Details",
+    "selected_location": "Selected Location",
+    "location_reporting": "Location Reporting (tap map to mark location)",
+    "submit_complaint": "Submit a Complaint",
+    "complaint_submit": "Submit Complaint",
+    "poll_results": "Poll Results",
+    "sentiment_analysis": "Sentiment Analysis",
+    "upcoming_events": "Upcoming Events",
+    "gamification": "Gamification",
+    "ai_assistant": "AI Assistant",
+    "ai_prediction": "AI Prediction: Public opinion likely to shift towards SUPPORT.",
+    "oppose": "Oppose",
+    "support": "Support",
+    "join": "Join",
+    "points": "Points",
+    "badge": "Badges: Civic Star, Volunteer Hero",
+    "library_text": "A simplified repository of key Indian legal resources for awareness and learning",
+    "library_search": "Search legal resources",
+    "no_result": "No results found",
+    // Additional hardcoded strings found in the app
+    "logout": "Logout",
+    "admin_panel": "Admin Panel (placeholder)",
+    "admin_features_coming_soon": "Admin features coming soon",
+    "add_review_for": "Add Review for",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "review_added_for": "Review added for",
+    "no_reviews_yet": "No reviews yet",
+    "reviews": "Reviews:",
+    "add_review": "Add Review",
+    "hide_reviews": "Hide Reviews",
+    "view_reviews": "View Reviews",
+    "upload_image_feature_coming_soon": "Upload image feature coming soon",
+    "complaint_submitted_successfully": "Complaint submitted successfully!",
+    "date": "Date:",
+    "signed_up_for": "Signed up for",
+    "could_not_open_pdf": "Could not open pdf",
+    "typing": "Typing...",
+    "type_your_question": "Type your question...",
   };
 
-  String getText(String key) {
-    return translations[isHindi ? "hi" : "en"]![key] ?? key;
+  AppLocalizations() {
+    _loadCachedTranslations();
   }
 
-  void toggleLanguage() {
-    isHindi = !isHindi;
-    notifyListeners();
+  /// Load cached translations from SharedPreferences via the translation service
+  Future<void> _loadCachedTranslations() async {
+    await _translationService.loadCacheFromPrefs();
+    // Sync cached translations from service to our cache
+    final cachedTranslations = _translationService.getCache();
+    // Only sync translations for texts that exist in our englishTexts
+    for (final entry in cachedTranslations.entries) {
+      if (englishTexts.values.contains(entry.key)) {
+        _hindiTranslations[entry.key] = entry.value;
+      }
+    }
   }
+
+  String getText(String key) {
+    final englishText = englishTexts[key] ?? key;
+    
+    if (!isHindi) {
+      return englishText;
+    }
+    
+    // Check our cache first
+    if (_hindiTranslations.containsKey(englishText)) {
+      return _hindiTranslations[englishText]!;
+    }
+    
+    // Try to get from translation service cache (may have been loaded from SharedPreferences)
+    // Note: TranslationService cache is internal, so we'll fetch on-demand
+    // Return English for now - it will be translated when toggleLanguage is called
+    return englishText;
+  }
+
+  /// Translate a single text string dynamically
+  Future<String> translate(String englishText) async {
+    if (englishText.trim().isEmpty) return englishText;
+    if (!isHindi) return englishText;
+    
+    // Check cache first
+    if (_hindiTranslations.containsKey(englishText)) {
+      return _hindiTranslations[englishText]!;
+    }
+    
+    // Translate via backend
+    final translated = await _translationService.translateText(englishText);
+    _hindiTranslations[englishText] = translated;
+    return translated;
+  }
+
+  /// Toggle language and translate all texts if switching to Hindi
+  Future<void> toggleLanguage() async {
+    if (isHindi) {
+      // Switching back to English
+      isHindi = false;
+      notifyListeners();
+      return;
+    }
+    
+    // Switching to Hindi - need to translate
+    isHindi = true;
+    _isTranslating = true;
+    notifyListeners();
+    
+    try {
+      // Get all English texts that need translation
+      final textsToTranslate = englishTexts.values.toList();
+      
+      // Translate in batch (more efficient)
+      final translations = await _translationService.translateBatch(textsToTranslate);
+      
+      // Update our cache with translations
+      _hindiTranslations.addAll(translations);
+      
+      // Also ensure any texts that weren't translated are at least in cache as original
+      for (final text in textsToTranslate) {
+        if (!_hindiTranslations.containsKey(text)) {
+          _hindiTranslations[text] = text; // Fallback to English if translation fails
+        }
+      }
+      
+      _isTranslating = false;
+      notifyListeners();
+    } catch (e) {
+      print('Error translating: $e');
+      _isTranslating = false;
+      notifyListeners();
+    }
+  }
+
+  bool get isTranslating => _isTranslating;
 }
 
 void main() {
@@ -173,7 +251,7 @@ class DashboardPage extends StatelessWidget {
               const Divider(),
               ListTile(
                 leading: Icon(Icons.logout),
-                title: const Text('Logout'),
+                title: Text(loc.getText("logout")),
                 onTap: () async {
                   await context.read<AuthService>().logout();
                 },
@@ -182,10 +260,10 @@ class DashboardPage extends StatelessWidget {
               if (auth.isAdmin)
                 ListTile(
                   leading: Icon(Icons.admin_panel_settings),
-                  title: const Text('Admin Panel (placeholder)'),
+                  title: Text(loc.getText("admin_panel")),
                   onTap: () {
                     Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Admin features coming soon')));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.getText("admin_features_coming_soon"))));
                   },
                 ),
             ],
@@ -196,10 +274,23 @@ class DashboardPage extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Text(loc.getText("app_title")),
         actions: [
-          IconButton(
-            icon: FaIcon(FontAwesomeIcons.globe),
-            onPressed: () {
-              context.read<AppLocalizations>().toggleLanguage();
+          Builder(
+            builder: (context) {
+              final loc = context.watch<AppLocalizations>();
+              return IconButton(
+                icon: loc.isTranslating
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : FaIcon(FontAwesomeIcons.globe),
+                onPressed: loc.isTranslating
+                    ? null
+                    : () async {
+                        await context.read<AppLocalizations>().toggleLanguage();
+                      },
+              );
             },
           )
         ],
@@ -302,10 +393,11 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
     final TextEditingController commentController = TextEditingController();
     double rating = 3.0;
 
+    final loc = context.watch<AppLocalizations>();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text("Add Review for ${lawyer["name"]}"),
+        title: Text("${loc.getText("add_review_for")} ${lawyer["name"]}"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -321,14 +413,14 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
             ),
             TextField(
               controller: commentController,
-              decoration: const InputDecoration(labelText: "Your Comment"),
+              decoration: InputDecoration(labelText: loc.getText("add_review")),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text("Cancel"),
+            child: Text(loc.getText("cancel")),
           ),
           ElevatedButton(
             onPressed: () {
@@ -341,10 +433,10 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
               });
               Navigator.pop(ctx);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Review added for ${lawyer["name"]}")),
+                SnackBar(content: Text("${loc.getText("review_added_for")} ${lawyer["name"]}")),
               );
             },
-            child: const Text("Submit"),
+            child: Text(loc.getText("submit")),
           ),
         ],
       ),
@@ -462,8 +554,8 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
                                   },
                                   child: Text(
                                     lawyer["showReviews"] == true
-                                        ? "Hide Reviews"
-                                        : "View Reviews",
+                                        ? loc.getText("hide_reviews")
+                                        : loc.getText("view_reviews"),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -479,13 +571,13 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if ((lawyer["reviews"] as List).isEmpty)
-                              const Text("No reviews yet."),
+                              Text(loc.getText("no_reviews_yet")),
                             if ((lawyer["reviews"] as List).isNotEmpty)
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text("Reviews:",
-                                      style: TextStyle(
+                                  Text(loc.getText("reviews"),
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14)),
                                   const SizedBox(height: 6),
@@ -522,7 +614,7 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
                                     borderRadius: BorderRadius.circular(8)),
                               ),
                               onPressed: () => _addReview(context, lawyer),
-                              child: const Text("Add Review",
+                              child: Text(loc.getText("add_review"),
                                   textAlign: TextAlign.center),
                             ),
                           ],
@@ -646,7 +738,7 @@ class _WhistlePageState extends State<WhistlePage> {
             ElevatedButton.icon(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Upload image feature coming soon")));
+                    SnackBar(content: Text(loc.getText("upload_image_feature_coming_soon"))));
               },
               icon: FaIcon(FontAwesomeIcons.camera),
               label: Text(loc.getText("upload_image")),
@@ -712,7 +804,7 @@ class _WhistlePageState extends State<WhistlePage> {
               onPressed: () async {
                 // TODO: Replace with backend API call
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Complaint submitted successfully!")),
+                  SnackBar(content: Text(loc.getText("complaint_submitted_successfully"))),
                 );
               },
               icon: FaIcon(FontAwesomeIcons.paperPlane),
@@ -852,11 +944,11 @@ class YouthPage extends StatelessWidget {
                   child: ListTile(
                     leading: FaIcon(FontAwesomeIcons.calendarDay),
                     title: Text(e["title"]!),
-                    subtitle: Text("Date: ${e["date"]}"),
+                    subtitle: Text("${loc.getText("date")} ${e["date"]}"),
                     trailing: ElevatedButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Signed up for ${e['title']}")));
+                            SnackBar(content: Text("${loc.getText("signed_up_for")} ${e['title']}")));
                       },
                       child: Text(loc.getText("join")),
                     ),
@@ -1028,8 +1120,9 @@ class _LegalLibraryPageState extends State<LegalLibraryPage> {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (!mounted) return;
+      final loc = context.read<AppLocalizations>();
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open pdf')));
+          SnackBar(content: Text(loc.getText("could_not_open_pdf"))));
     }
   }
 
@@ -1209,7 +1302,7 @@ class _AIAssistantPageState extends State<AIAssistantPage> {
                         color: Colors.orange[100],
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text('Typing...'),
+                      child: Text(loc.getText("typing")),
                     ),
                   );
                 }
@@ -1240,7 +1333,7 @@ class _AIAssistantPageState extends State<AIAssistantPage> {
                   child: TextField(
                     controller: _controller,
                     textCapitalization: TextCapitalization.sentences,
-                    decoration: const InputDecoration(hintText: 'Type your question...'),
+                    decoration: InputDecoration(hintText: loc.getText("type_your_question")),
                     onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
