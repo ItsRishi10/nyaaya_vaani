@@ -12,7 +12,7 @@
 
 
     <application
-        android:label="nyaaya_vaani"
+        android:label="Nyaaya Vaani"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
