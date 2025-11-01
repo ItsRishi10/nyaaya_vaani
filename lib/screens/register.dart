@@ -15,6 +15,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _email = TextEditingController();
+  final TextEditingController _adminCode = TextEditingController();
   bool _loading = false;
   String? _error;
   bool _obscurePassword = true;
@@ -66,6 +67,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 validator: (v) => (v ?? '').isEmpty ? 'Enter password' : null,
               ),
               const SizedBox(height: 16),
+              // Optional admin creation code (for testing/demo). Enter the secret key to make this user an admin.
+              TextFormField(
+                controller: _adminCode,
+                decoration: const InputDecoration(labelText: 'Admin code (optional)'),
+              ),
+              const SizedBox(height: 12),
               if (_error != null)
                 Text(_error!, style: TextStyle(color: Colors.red)),
               ElevatedButton(
@@ -75,7 +82,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   final auth = context.read<AuthService>();
                   // Capture navigator before awaiting to avoid using BuildContext after await
                   final navigator = Navigator.of(context);
-                  final ok = await auth.register(_username.text.trim(), _password.text);
+                  // If the admin code matches our secret, register as admin.
+                  // NOTE: This is for demo/testing only. Replace with a secure flow in production.
+                  final adminSecret = 'letmein_admin';
+                  final wantsAdmin = _adminCode.text.trim().isNotEmpty && _adminCode.text.trim() == adminSecret;
+                  final ok = await auth.register(_username.text.trim(), _password.text, isAdmin: wantsAdmin);
                   if (!mounted) return;
                   setState(() { _loading = false; });
                   if (!ok) {

@@ -35,7 +35,7 @@ class AuthService extends ChangeNotifier {
       await _saveUsers(prefs);
     }
 
-    if (!_users.containsKey('admin')) {
+    if (!_users.containsKey('Rishi')) {
       _users['Rishi'] = {'password': 'rishi10', 'isAdmin': true};
       await _saveUsers(prefs);
     }
