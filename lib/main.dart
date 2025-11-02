@@ -94,9 +94,18 @@ class AppLocalizations extends ChangeNotifier {
     try {
       // Get all English texts that need translation
       final textsToTranslate = englishTexts.values.toList();
+      print('Starting translation of ${textsToTranslate.length} texts...');
       
-      // Translate in batch (more efficient)
-      final translations = await _translationService.translateBatch(textsToTranslate);
+      // Translate in batch (more efficient) with timeout
+      final translations = await _translationService.translateBatch(textsToTranslate).timeout(
+        const Duration(minutes: 5),
+        onTimeout: () {
+          print('Translation batch timed out, using cached translations');
+          return <String, String>{}; // Return empty map, will use cached or fallback
+        },
+      );
+      
+      print('Translation completed, got ${translations.length} translations');
       
       // Update our cache with translations
       _hindiTranslations.addAll(translations);
@@ -110,8 +119,10 @@ class AppLocalizations extends ChangeNotifier {
       
       _isTranslating = false;
       notifyListeners();
-    } catch (e) {
+      print('Translation UI updated');
+    } catch (e, stackTrace) {
       print('Error translating: $e');
+      print('Stack trace: $stackTrace');
       _isTranslating = false;
       isHindi = false; // Revert to English on error
       notifyListeners();

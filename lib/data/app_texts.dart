@@ -82,7 +82,37 @@ const Map<String, String> appEnglishTexts = {
   // ============================================
   // ADD YOUR NEW ENGLISH TEXTS BELOW THIS LINE
   // ============================================
-  // 
+
+  "L1" : "Companies Act 2013",
+  "L2" : "Consumer Protection Act",
+  "L3" : "",
+  "L4" : "",
+  "L5" : "",
+  "L6" : "",
+  "L7" : "",
+  "L8" : "",
+  "L9" : "",
+  "L10" : "",
+  "L11" : "",
+  "L12" : "",
+  "L13" : "",
+  "L14" : "",
+  "L15" : "",
+  "L16" : "",
+  "L17" : "",
+  "L18" : "",
+  "L19" : "",
+  "L20" : "",
+  "L21" : "",
+  "L22" : "",
+  "L23" : "",
+  "L24" : "",
+  "L25" : "",
+  "L26" : "",
+  "L27" : "",
+  "L28" : "",
+  "L29" : "",
+
   // Example:
   // "welcome_message": "Welcome to Nyaaya Vaani",
   // "settings": "Settings",

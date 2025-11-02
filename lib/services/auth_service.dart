@@ -40,6 +40,11 @@ class AuthService extends ChangeNotifier {
       await _saveUsers(prefs);
     }
 
+    if (!_users.containsKey('Pranav')) {
+      _users['Pranav'] = {'password': 'Sanskruth@1', 'isAdmin': true};
+      await _saveUsers(prefs);
+    }
+
     final currentJson = prefs.getString(_prefsKeyCurrent);
     if (currentJson != null) {
       _currentUser = json.decode(currentJson) as Map<String, dynamic>;

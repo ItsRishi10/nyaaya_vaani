@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
@@ -5,6 +6,11 @@ import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 class TranslationService {
   // Cache for translations to avoid repeated translations
   final Map<String, String> _translationCache = {};
+  // Manual overrides for specific phrases where ML translation isn't ideal
+  // Key: English text, Value: Preferred Hindi translation
+  final Map<String, String> _manualOverrides = {
+    'Nyaaya Vaani': 'न्याय वाणी',
+  };
   
   // ML Kit translator instance
   OnDeviceTranslator? _translator;
@@ -21,18 +27,30 @@ class TranslationService {
       return;
     }
 
-    // Prevent multiple simultaneous initializations
+    // Prevent multiple simultaneous initializations with better timeout
     if (_isInitializing) {
-      // Wait a bit and check again
-      await Future.delayed(const Duration(milliseconds: 100));
-      if (_isInitialized && _translator != null) {
-        return;
+      // Wait and check multiple times with timeout
+      for (int i = 0; i < 50; i++) { // Max 5 seconds wait
+        await Future.delayed(const Duration(milliseconds: 100));
+        if (_isInitialized && _translator != null) {
+          return;
+        }
+        if (!_isInitializing) {
+          // Another initialization completed/failed, try again
+          break;
+        }
+      }
+      // If still initializing after timeout, reset and try again
+      if (_isInitializing) {
+        print('Warning: Initialization timeout, resetting...');
+        _isInitializing = false;
       }
     }
 
     _isInitializing = true;
 
     try {
+      print('Initializing translator...');
       // Create translator for English to Hindi
       final modelManager = OnDeviceTranslatorModelManager();
       final sourceLanguage = TranslateLanguage.english;
@@ -42,7 +60,12 @@ class TranslationService {
       final isSourceDownloaded = await modelManager.isModelDownloaded(sourceLanguage.bcpCode);
       if (!isSourceDownloaded) {
         print('Downloading source language model (English)...');
-        await modelManager.downloadModel(sourceLanguage.bcpCode);
+        await modelManager.downloadModel(sourceLanguage.bcpCode).timeout(
+          const Duration(minutes: 10),
+          onTimeout: () {
+            throw TimeoutException('Source model download timed out');
+          },
+        );
         print('Source language model downloaded successfully!');
       }
 
@@ -50,7 +73,12 @@ class TranslationService {
       final isTargetDownloaded = await modelManager.isModelDownloaded(targetLanguage.bcpCode);
       if (!isTargetDownloaded) {
         print('Downloading target language model (Hindi)... This may take a few minutes on first use.');
-        await modelManager.downloadModel(targetLanguage.bcpCode);
+        await modelManager.downloadModel(targetLanguage.bcpCode).timeout(
+          const Duration(minutes: 15),
+          onTimeout: () {
+            throw TimeoutException('Target model download timed out');
+          },
+        );
         print('Target language model downloaded successfully!');
       }
 
@@ -65,6 +93,8 @@ class TranslationService {
       print('Translator initialized successfully');
     } catch (e) {
       _isInitializing = false;
+      _isInitialized = false;
+      _translator = null;
       print('Error initializing translator: $e');
       throw Exception('Failed to initialize offline translator: $e');
     }
@@ -74,6 +104,14 @@ class TranslationService {
   Future<String> translateText(String text) async {
     if (text.trim().isEmpty) return text;
     
+    // Respect manual overrides first
+    if (_manualOverrides.containsKey(text)) {
+      final overridden = _manualOverrides[text]!;
+      _translationCache[text] = overridden; // cache it
+      await _saveCacheToPrefs();
+      return overridden;
+    }
+
     // Check cache first
     if (_translationCache.containsKey(text)) {
       return _translationCache[text]!;
@@ -114,6 +152,13 @@ class TranslationService {
         result[text] = text;
         continue;
       }
+      // Apply manual overrides and skip translation for those
+      if (_manualOverrides.containsKey(text)) {
+        final overridden = _manualOverrides[text]!;
+        _translationCache[text] = overridden;
+        result[text] = overridden;
+        continue;
+      }
       
       if (_translationCache.containsKey(text)) {
         result[text] = _translationCache[text]!;
@@ -135,9 +180,16 @@ class TranslationService {
       // Translate each text (ML Kit doesn't support batch, but we can do it sequentially)
       for (final text in textsToTranslate) {
         try {
-          final translated = await _translator!.translateText(text);
+          final translated = await _translator!.translateText(text).timeout(
+            const Duration(seconds: 30),
+            onTimeout: () {
+              print('Translation timeout for: "$text"');
+              return text; // Return original on timeout
+            },
+          );
           _translationCache[text] = translated;
           result[text] = translated;
+          print('Translated: "$text" -> "$translated"'); // Debug log
         } catch (e) {
           print('Error translating "$text": $e');
           // Use original text if translation fails
