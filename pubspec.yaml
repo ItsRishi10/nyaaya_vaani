@@ -39,7 +39,7 @@ flutter:
     - family: MaterialIcons
       fonts:
         - asset: fonts/MaterialIcons-Regular.ttf
-  generate: true
+  # generate: true  # Removed - using Google ML Kit translation instead of ARB files
 
 flutter_launcher_icons:
   android: true

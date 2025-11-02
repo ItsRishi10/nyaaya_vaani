@@ -30,8 +30,8 @@ class AuthService extends ChangeNotifier {
     }
 
     // Ensure a default admin user exists
-    if (!_users.containsKey('admin')) {
-      _users['admin'] = {'password': 'admin123', 'isAdmin': true};
+    if (!_users.containsKey('Admin')) {
+      _users['Admin'] = {'password': 'admin123', 'isAdmin': true};
       await _saveUsers(prefs);
     }
 

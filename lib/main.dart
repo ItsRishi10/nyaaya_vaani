@@ -12,6 +12,7 @@ import 'services/auth_service.dart';
 import 'services/translation_service.dart';
 import 'screens/login.dart';
 import 'widgets/side_nav.dart';
+import 'data/app_texts.dart'; // Import English texts from separate file
 
 // ----------------- Localization -----------------
 class AppLocalizations extends ChangeNotifier {
@@ -22,57 +23,8 @@ class AppLocalizations extends ChangeNotifier {
   // Cache for Hindi translations
   final Map<String, String> _hindiTranslations = {};
 
-  // Base English dictionary (keep only English, Hindi will come from backend)
-  final Map<String, String> englishTexts = {
-      "app_title": "Nyaaya Vaani",
-      "legal_services": "Legal Services",
-      "nyaaya_whistle": "Nyaaya Whistle",
-      "statistics": "Statistics & Strategy",
-      "youth": "Youth Association",
-      "legal_library": "Legal Library",
-      "upload_image": "Upload Image",
-      "available_advocates": "Available Advocates",
-      "request_help": "Request Help",
-      "complaint_details": "Complaint Details",
-      "selected_location": "Selected Location",
-      "location_reporting": "Location Reporting (tap map to mark location)",
-      "submit_complaint": "Submit a Complaint",
-      "complaint_submit": "Submit Complaint",
-      "poll_results": "Poll Results",
-      "sentiment_analysis": "Sentiment Analysis",
-      "upcoming_events": "Upcoming Events",
-      "gamification": "Gamification",
-      "ai_assistant": "AI Assistant",
-      "ai_prediction": "AI Prediction: Public opinion likely to shift towards SUPPORT.",
-      "oppose": "Oppose",
-      "support": "Support",
-      "join": "Join",
-      "points": "Points",
-      "badge": "Badges: Civic Star, Volunteer Hero",
-      "library_text": "A simplified repository of key Indian legal resources for awareness and learning",
-      "library_search": "Search legal resources",
-      "no_result": "No results found",
-    // Additional hardcoded strings found in the app
-    "logout": "Logout",
-    "admin_panel": "Admin Panel (placeholder)",
-    "admin_features_coming_soon": "Admin features coming soon",
-    "add_review_for": "Add Review for",
-    "cancel": "Cancel",
-    "submit": "Submit",
-    "review_added_for": "Review added for",
-    "no_reviews_yet": "No reviews yet",
-    "reviews": "Reviews:",
-    "add_review": "Add Review",
-    "hide_reviews": "Hide Reviews",
-    "view_reviews": "View Reviews",
-    "upload_image_feature_coming_soon": "Upload image feature coming soon",
-    "complaint_submitted_successfully": "Complaint submitted successfully!",
-    "date": "Date:",
-    "signed_up_for": "Signed up for",
-    "could_not_open_pdf": "Could not open pdf",
-    "typing": "Typing...",
-    "type_your_question": "Type your question...",
-  };
+  // Base English dictionary - imported from app_texts.dart for easy editing
+  final Map<String, String> englishTexts = appEnglishTexts;
 
   AppLocalizations() {
     _loadCachedTranslations();
