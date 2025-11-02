@@ -298,7 +298,7 @@ class DashboardPage extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Translation failed: Translation server is not available. Please start the backend server at ${TranslationService.baseUrl}',
+                                'Translation failed: ${e.toString()}',
                               ),
                               backgroundColor: Colors.red,
                               duration: const Duration(seconds: 5),

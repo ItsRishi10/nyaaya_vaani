@@ -1,51 +1,74 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/foundation.dart';
+import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 
 class TranslationService {
-  // ===== CONFIGURATION FOR PHYSICAL ANDROID DEVICE =====
-  // If you're using a physical Android device (not emulator), 
-  // set this to your computer's local IP address.
-  // Leave as null to auto-detect (uses 10.0.2.2 for emulator, localhost for other platforms)
-  // 
-  // To find your computer's IP on Windows:
-  //   1. Open PowerShell
-  //   2. Run: ipconfig
-  //   3. Look for "IPv4 Address" under your active network adapter (usually Wi-Fi or Ethernet)
-  //   4. It will look like: 192.168.1.xxx or 192.168.0.xxx
-  //
-  // Example: '192.168.1.100'
-  static const String? physicalDeviceIp = '192.168.1.9'; // Change this to your IP if using physical device
-  
-  // Automatically detect the correct base URL based on platform
-  static String get baseUrl {
-    // If physical device IP is configured, use it for Android
-    if (Platform.isAndroid && physicalDeviceIp != null && physicalDeviceIp!.isNotEmpty) {
-      return 'http://$physicalDeviceIp:8000';
-    }
-    
-    if (kIsWeb) {
-      return 'http://localhost:8000';
-    }
-    
-    if (Platform.isAndroid) {
-      // Android emulator uses 10.0.2.2 to access host machine's localhost
-      return 'http://10.0.2.2:8000';
-    } else if (Platform.isIOS) {
-      return 'http://localhost:8000';
-    }
-    
-    // Default fallback
-    return 'http://localhost:8000';
-  }
-  
-  // Cache for translations to avoid repeated API calls
+  // Cache for translations to avoid repeated translations
   final Map<String, String> _translationCache = {};
+  
+  // ML Kit translator instance
+  OnDeviceTranslator? _translator;
+  bool _isInitialized = false;
+  bool _isInitializing = false;
+
   static final TranslationService _instance = TranslationService._internal();
   factory TranslationService() => _instance;
   TranslationService._internal();
+
+  /// Initialize the offline translator (downloads model on first use)
+  Future<void> _ensureTranslator() async {
+    if (_isInitialized && _translator != null) {
+      return;
+    }
+
+    // Prevent multiple simultaneous initializations
+    if (_isInitializing) {
+      // Wait a bit and check again
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (_isInitialized && _translator != null) {
+        return;
+      }
+    }
+
+    _isInitializing = true;
+
+    try {
+      // Create translator for English to Hindi
+      final modelManager = OnDeviceTranslatorModelManager();
+      final sourceLanguage = TranslateLanguage.english;
+      final targetLanguage = TranslateLanguage.hindi;
+
+      // Check if source language model is downloaded, if not download it
+      final isSourceDownloaded = await modelManager.isModelDownloaded(sourceLanguage.bcpCode);
+      if (!isSourceDownloaded) {
+        print('Downloading source language model (English)...');
+        await modelManager.downloadModel(sourceLanguage.bcpCode);
+        print('Source language model downloaded successfully!');
+      }
+
+      // Check if target language model is downloaded, if not download it
+      final isTargetDownloaded = await modelManager.isModelDownloaded(targetLanguage.bcpCode);
+      if (!isTargetDownloaded) {
+        print('Downloading target language model (Hindi)... This may take a few minutes on first use.');
+        await modelManager.downloadModel(targetLanguage.bcpCode);
+        print('Target language model downloaded successfully!');
+      }
+
+      // Create the translator
+      _translator = OnDeviceTranslator(
+        sourceLanguage: sourceLanguage,
+        targetLanguage: targetLanguage,
+      );
+
+      _isInitialized = true;
+      _isInitializing = false;
+      print('Translator initialized successfully');
+    } catch (e) {
+      _isInitializing = false;
+      print('Error initializing translator: $e');
+      throw Exception('Failed to initialize offline translator: $e');
+    }
+  }
 
   /// Translate a single text from English to Hindi
   Future<String> translateText(String text) async {
@@ -57,34 +80,26 @@ class TranslationService {
     }
 
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/translate_one'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'text': text}),
-      );
+      // Ensure translator is initialized
+      await _ensureTranslator();
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final translation = data['translation'] as String;
-        
-        // Cache the translation
-        _translationCache[text] = translation;
-        await _saveCacheToPrefs();
-        
-        return translation;
-      } else {
-        print('Translation API error: ${response.statusCode} - ${response.body}');
-        return text; // Return original text on error
+      if (_translator == null) {
+        throw Exception('Translator not initialized');
       }
-    } on SocketException catch (e) {
-      print('Translation service error: Connection refused. Is the backend server running at $baseUrl?');
-      print('Error details: $e');
-      // Re-throw to let caller know connection failed
-      throw Exception('Translation server is not available. Please start the backend server.');
+
+      // Translate using ML Kit
+      final translatedText = await _translator!.translateText(text);
+      
+      // Cache the translation
+      _translationCache[text] = translatedText;
+      await _saveCacheToPrefs();
+      
+      return translatedText;
     } catch (e) {
-      print('Translation service error: $e');
-      // Re-throw other exceptions too
-      throw Exception('Translation failed: $e');
+      print('Translation error: $e');
+      // Return original text on error but don't throw
+      // This allows the app to continue working even if translation fails
+      return text;
     }
   }
 
@@ -110,51 +125,36 @@ class TranslationService {
     if (textsToTranslate.isEmpty) return result;
 
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/translate'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'texts': textsToTranslate}),
-      );
+      // Ensure translator is initialized
+      await _ensureTranslator();
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final translations = List<String>.from(data['translations']);
-        
-        // Cache translations and add to result
-        for (int i = 0; i < textsToTranslate.length; i++) {
-          final original = textsToTranslate[i];
-          final translated = i < translations.length ? translations[i] : original;
-          _translationCache[original] = translated;
-          result[original] = translated;
+      if (_translator == null) {
+        throw Exception('Translator not initialized');
+      }
+
+      // Translate each text (ML Kit doesn't support batch, but we can do it sequentially)
+      for (final text in textsToTranslate) {
+        try {
+          final translated = await _translator!.translateText(text);
+          _translationCache[text] = translated;
+          result[text] = translated;
+        } catch (e) {
+          print('Error translating "$text": $e');
+          // Use original text if translation fails
+          result[text] = text;
+          _translationCache[text] = text;
         }
-        
-        await _saveCacheToPrefs();
-      } else {
-        print('Translation API error: ${response.statusCode} - ${response.body}');
-        // Return original texts on error
-        for (final text in textsToTranslate) {
+      }
+      
+      await _saveCacheToPrefs();
+    } catch (e) {
+      print('Batch translation error: $e');
+      // Return original texts on error
+      for (final text in textsToTranslate) {
+        if (!result.containsKey(text)) {
           result[text] = text;
         }
       }
-    } on SocketException catch (e) {
-      print('Translation service error: Connection refused. Is the backend server running at $baseUrl?');
-      print('Error details: $e');
-      // Return original texts on error, but throw to notify caller
-      for (final text in textsToTranslate) {
-        result[text] = text;
-      }
-      throw Exception('Translation server is not available. Please start the backend server.');
-    } catch (e) {
-      print('Translation service error: $e');
-      // Return original texts on error
-      for (final text in textsToTranslate) {
-        result[text] = text;
-      }
-      // Re-throw to notify caller
-      if (e is Exception) {
-        rethrow;
-      }
-      throw Exception('Translation failed: $e');
     }
 
     return result;
@@ -205,17 +205,11 @@ class TranslationService {
     }
   }
 
-  /// Check if backend is available
-  Future<bool> checkBackendHealth() async {
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/health'),
-        headers: {'Content-Type': 'application/json'},
-      );
-      return response.statusCode == 200;
-    } catch (e) {
-      return false;
-    }
+  /// Dispose translator resources
+  Future<void> dispose() async {
+    await _translator?.close();
+    _translator = null;
+    _isInitialized = false;
   }
 }
 
