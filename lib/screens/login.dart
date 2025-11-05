@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
 import 'register.dart';
+import 'register2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -72,11 +73,26 @@ class _LoginPageState extends State<LoginPage> {
                 child: _loading ? CircularProgressIndicator(color: Colors.white) : const Text('Login'),
               ),
               const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
-                },
-                child: const Text('Register'),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
+                      },
+                      child: const Text('Register as a User'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterAdvocatePage()));
+                      },
+                      child: const Text('Register as an Advocate'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

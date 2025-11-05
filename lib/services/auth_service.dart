@@ -65,13 +65,19 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<bool> register(String username, String password, {bool isAdmin = false}) async {
+  /// Register a new user. `metadata` may include email, phone, aadhar, advocateNumber, role, etc.
+  Future<bool> register(String username, String password, {bool isAdmin = false, Map<String, dynamic>? metadata}) async {
     final prefs = await SharedPreferences.getInstance();
     if (_users.containsKey(username)) return false;
-    _users[username] = {'password': password, 'isAdmin': isAdmin};
+    final entry = <String, dynamic>{'password': password, 'isAdmin': isAdmin};
+    if (metadata != null) {
+      entry.addAll(metadata);
+    }
+    _users[username] = entry;
     await _saveUsers(prefs);
     // auto-login after registration
     _currentUser = {'username': username, 'isAdmin': isAdmin};
+    if (metadata != null) _currentUser!.addAll(metadata);
     await _saveCurrent(prefs);
     notifyListeners();
     return true;
