@@ -828,22 +828,21 @@ class StatisticsPage extends StatelessWidget {
           icon: const FaIcon(FontAwesomeIcons.arrowLeft),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(loc.getText("statistics")),
+        title: const Text("Bihar Elections Opinion Poll"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            Text(
-              "Bihar Election Model Survey (2025)",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            const Text(
+              "Latest Opinion Poll (2025)",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            Text(
-              "Based on the latest model survey, the RJD-led alliance appears ahead, "
-              "while NDA maintains a strong presence. Smaller regional parties and independents "
-              "constitute a notable share of voter preference.",
-              style: const TextStyle(fontSize: 14),
+            const Text(
+              "As per the latest opinion poll data, the NDA alliance is showing stronger support across several key regions, "
+              "while the RJD-led alliance remains competitive. Smaller regional parties still hold a modest share.",
+              style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 20),
             const Text("Poll Results (in %)"),
@@ -866,13 +865,13 @@ class StatisticsPage extends StatelessWidget {
                   borderData: FlBorderData(show: false),
                   barGroups: [
                     BarChartGroupData(x: 0, barRods: [
-                      BarChartRodData(toY: 42, color: Colors.green, width: 30),
+                      BarChartRodData(toY: 45, color: Colors.orange, width: 30),
                     ]),
                     BarChartGroupData(x: 1, barRods: [
-                      BarChartRodData(toY: 38, color: Colors.orange, width: 30),
+                      BarChartRodData(toY: 40, color: Colors.green, width: 30),
                     ]),
                     BarChartGroupData(x: 2, barRods: [
-                      BarChartRodData(toY: 20, color: Colors.blueGrey, width: 30),
+                      BarChartRodData(toY: 15, color: Colors.blueGrey, width: 30),
                     ]),
                   ],
                 ),
@@ -889,19 +888,8 @@ class StatisticsPage extends StatelessWidget {
                 PieChartData(
                   sections: [
                     PieChartSectionData(
-                      title: "RJD+ (42%)",
-                      value: 42,
-                      color: Colors.green,
-                      radius: 60,
-                      titleStyle: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    PieChartSectionData(
-                      title: "NDA (38%)",
-                      value: 38,
+                      title: "NDA (45%)",
+                      value: 45,
                       color: Colors.orange,
                       radius: 60,
                       titleStyle: TextStyle(
@@ -911,8 +899,19 @@ class StatisticsPage extends StatelessWidget {
                       ),
                     ),
                     PieChartSectionData(
-                      title: "Others (20%)",
-                      value: 20,
+                      title: "RJD+ (40%)",
+                      value: 40,
+                      color: Colors.green,
+                      radius: 60,
+                      titleStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    PieChartSectionData(
+                      title: "Others (15%)",
+                      value: 15,
                       color: Colors.blueGrey,
                       radius: 60,
                       titleStyle: TextStyle(
@@ -926,10 +925,11 @@ class StatisticsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              "AI Prediction: RJD+ is likely to maintain a lead if current voter sentiment continues, "
-              "but close competition with NDA expected in swing regions like Patna and Muzaffarpur.",
-              style: const TextStyle(fontSize: 14),
+            const Text(
+              "AI Prediction: The NDA alliance is projected to lead in the Bihar elections, "
+              "driven by strong performances in Patna, Nalanda, and north-central regions. "
+              "The RJD-led bloc remains influential but trails slightly in voter sentiment.",
+              style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
@@ -951,9 +951,9 @@ class StatisticsPage extends StatelessWidget {
   static Widget _bottomTitles(double value, TitleMeta meta) {
     switch (value.toInt()) {
       case 0:
-        return const Text("RJD+");
-      case 1:
         return const Text("NDA");
+      case 1:
+        return const Text("RJD+");
       case 2:
         return const Text("Others");
       default:
