@@ -145,6 +145,22 @@ const Map<String, String> appEnglishTexts = {
   //Survey
   "survey": "Survey",
   "enter_answer": "Enter answer",
+  "enter_text": "Enter text",
+  "topic_of_survey": "Topic of Survey",
+  "purpose": "Purpose",
+  "user_type": "User Type (MCQ)",
+  "user_type_option_political_party": "Political Party",
+  "user_type_option_ngo": "NGO",
+  "user_type_option_welfare_association": "Welfare Association",
+  "user_type_option_individual": "Individual",
+  "location_of_survey": "Location of Survey",
+  "no_of_respondents": "Number of respondents",
+  "mail_id": "Mail id",
+  "mobile_number": "Mobile Number",
+  "no_options_configured": "No options configured",
+  "please_select": "Please select an option",
+  "survey_submitted": "Survey submitted",
+  "survey_saved": "Survey saved",
 
   // Example:
   // "welcome_message": "Welcome to Nyaaya Vaani",

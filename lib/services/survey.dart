@@ -27,10 +27,24 @@ class _SurveyPageState extends State<SurveyPage> {
   final List<TextEditingController> _textControllers = [];
   final Map<int, String?> _mcqAnswers = {};
 
+  // Use localization keys for default question texts/options so labels are localized via AppLocalizations
   final List<Map<String, dynamic>> _defaultQuestions = [
-    {"text": 'Do you support the current civic initiative?', "type": 'text', "options": []},
-    {"text": 'Have you used Nyaaya services before?', "type": 'mcq', "options": ['Yes', 'No']},
-    {"text": 'Would you recommend this app to others?', "type": 'mcq', "options": ['Definitely', 'Maybe', 'No']},
+    {"text": 'topic_of_survey', "type": 'text', "options": []},
+    {"text": 'purpose', "type": 'text', "options": []},
+    {
+      "text": 'user_type',
+      "type": 'mcq',
+      "options": [
+        'user_type_option_political_party',
+        'user_type_option_ngo',
+        'user_type_option_welfare_association',
+        'user_type_option_individual'
+      ]
+    },
+    {"text": 'location_of_survey', "type": 'text', "options": []},
+    {"text": 'no_of_respondents', "type": 'text', "options": []},
+    {"text": 'mail_id', "type": 'text', "options": []},
+    {"text": 'mobile_number', "type": 'text', "options": []},
   ];
 
   @override
@@ -124,29 +138,45 @@ class _SurveyPageState extends State<SurveyPage> {
                         itemBuilder: (context, i) {
                           final q = _questions[i];
                           final qText = q['text'] as String? ?? '';
+                          // If qText is a key in englishTexts, use localized text, otherwise use literal
+                          final displayLabel = loc.englishTexts.containsKey(qText) ? loc.getText(qText) : qText;
                           if (q['type'] == 'mcq') {
                             final opts = (q['options'] as List<dynamic>?)?.cast<String>() ?? [];
+                            if (opts.isEmpty) {
+                              // show a friendly disabled field when no options are configured
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: InputDecorator(
+                                  decoration: InputDecoration(labelText: qText),
+                                    child: Text(loc.getText('no_options_configured')),
+                                ),
+                              );
+                            }
+
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),
                               child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(labelText: qText),
-                                value: _mcqAnswers[i],
-                                items: opts.map((o) => DropdownMenuItem(value: o, child: Text(o))).toList(),
+                                  decoration: InputDecoration(labelText: displayLabel),
+                                  initialValue: _mcqAnswers[i],
+                                  items: opts.map((o) {
+                                    final optLabel = loc.englishTexts.containsKey(o) ? loc.getText(o) : o;
+                                    return DropdownMenuItem(value: o, child: Text(optLabel));
+                                  }).toList(),
                                 onChanged: (v) => setState(() => _mcqAnswers[i] = v),
                                 validator: (v) => (v == null || v.isEmpty) ? loc.getText('please_select') : null,
                               ),
                             );
                           }
 
-                          final controller = i < _textControllers.length ? _textControllers[i] : null;
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: TextFormField(
-                              controller: controller,
-                              decoration: InputDecoration(labelText: qText),
-                              validator: (v) => (v ?? '').isEmpty ? loc.getText('enter_text') : null,
-                            ),
-                          );
+                            final controller = i < _textControllers.length ? _textControllers[i] : null;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12.0),
+                              child: TextFormField(
+                                controller: controller,
+                                decoration: InputDecoration(labelText: displayLabel),
+                                validator: (v) => (v ?? '').isEmpty ? loc.getText('enter_text') : null,
+                              ),
+                            );
                         },
                       ),
                     ),
