@@ -12,6 +12,7 @@ class AuthService extends ChangeNotifier {
 
   Map<String, dynamic>? _currentUser;
   Map<String, Map<String, dynamic>> _users = {}; // username -> {password, isAdmin}
+  bool _initialized = false;
 
   AuthService() {
     _loadFromPrefs();
@@ -50,8 +51,13 @@ class AuthService extends ChangeNotifier {
       _currentUser = json.decode(currentJson) as Map<String, dynamic>;
     }
 
+    // Mark initialization complete so UI can wait for preferences to be loaded
+    _initialized = true;
     notifyListeners();
   }
+
+  /// Whether the service has finished loading values from SharedPreferences
+  bool get initialized => _initialized;
 
   Future<void> _saveUsers(SharedPreferences prefs) async {
     await prefs.setString(_prefsKeyUsers, json.encode(_users));

@@ -176,6 +176,15 @@ class AuthGate extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthService>();
 
+    // Wait until SharedPreferences have been loaded. During app cold-start the
+    // AuthService loads prefs asynchronously; show a small loading indicator
+    // so the UI doesn't render a dashboard with missing user info.
+    if (!auth.initialized) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     // If not logged in, show the HomePage (promo / entry) where user can login/register.
     if (!auth.isLoggedIn) {
       return const HomePage();

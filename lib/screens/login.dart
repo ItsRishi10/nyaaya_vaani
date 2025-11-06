@@ -81,6 +81,8 @@ class _LoginPageState extends State<LoginPage> {
                   if (!_formKey.currentState!.validate()) return;
                   setState(() { _loading = true; _error = null; });
                   final auth = context.read<AuthService>();
+                  // Capture the navigator before awaiting to avoid using BuildContext
+                  // across async gaps (prevents use_build_context_synchronously warnings).
                   final navigator = Navigator.of(context);
                   final ok = await auth.login(_username.text.trim(), _password.text);
                   setState(() { _loading = false; });
@@ -88,9 +90,12 @@ class _LoginPageState extends State<LoginPage> {
                     setState(() { _error = loc.getText('invalid_credentials'); });
                     return;
                   }
-                  // on success, navigate to DashboardPage directly since Home is not the auth-gate
+                  // On success we simply pop the login screen. AuthGate (the app root)
+                  // listens to AuthService and will rebuild to show the Dashboard when
+                  // the user is logged in. Avoid pushing Dashboard manually to keep
+                  // navigation consistent and prevent duplicate routes.
                   if (!mounted) return;
-                  navigator.pushReplacement(MaterialPageRoute(builder: (_) => const DashboardPage()));
+                  navigator.pop();
                 },
                 child: _loading ? const CircularProgressIndicator(color: Colors.white) : Text(loc.getText('login')),
               ),
