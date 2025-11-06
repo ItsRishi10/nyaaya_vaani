@@ -55,22 +55,26 @@ class HomePage extends StatelessWidget {
 											),
 										),
 										const SizedBox(height: 24),
-										Text(
+										Container(
+                      alignment: Alignment.center,
+                      child: Text(
 											loc.getText('app_title'),
-											style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.orangeAccent),
-										),
-										const SizedBox(height: 12),
-										Text(
+											style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.orangeAccent),
+										  ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+										  child: Text(
 											loc.getText('Subtitle'),
-											style: const TextStyle(fontSize: 14, color: Colors.black54),
-										),
+											style: const TextStyle(fontSize: 20, color: Colors.black54),
+										  ),
+                    )
 									],
 								),
 							),
-
 							// Bottom action row: prominent Login button and Register links
 							Container(
-								padding: const EdgeInsets.symmetric(vertical: 12),
+								padding: const EdgeInsets.symmetric(vertical: 90),
 								child: Row(
 									children: [
 										Expanded(
