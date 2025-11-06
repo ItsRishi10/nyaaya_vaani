@@ -495,7 +495,7 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
                                   lawyer["name"],
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),

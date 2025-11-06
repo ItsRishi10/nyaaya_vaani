@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
 							),
 							child: Center(
 								child: Image.asset(
-									'assets/images/home_page.png',
+									'assets/home_page.png',
 									fit: BoxFit.contain,
 									height: 180,
 								),
