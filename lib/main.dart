@@ -10,7 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart'; // NEW for state management
 import 'services/auth_service.dart';
 import 'services/translation_service.dart';
-import 'screens/login.dart';
 import 'screens/home.dart';
 import 'widgets/side_nav.dart';
 import 'data/app_texts.dart'; // Import English texts from separate file
@@ -161,8 +160,9 @@ class NyaayaVaaniApp extends StatelessWidget {
           backgroundColor: Colors.orange,
         ),
       ),
-  // Start the app at HomePage by default as requested.
-  home: const HomePage(),
+  // Use AuthGate as the app root so authentication state (persisted in SharedPreferences)
+  // determines which screen to show (HomePage when not logged in, Dashboard when logged in).
+  home: const AuthGate(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -176,8 +176,9 @@ class AuthGate extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthService>();
 
+    // If not logged in, show the HomePage (promo / entry) where user can login/register.
     if (!auth.isLoggedIn) {
-      return const LoginPage();
+      return const HomePage();
     }
 
     // Logged in -> show dashboard (dashboard now includes side nav + drawer)
@@ -221,6 +222,8 @@ class DashboardPage extends StatelessWidget {
                 leading: Icon(Icons.logout),
                 title: Text(loc.getText("logout")),
                 onTap: () async {
+                  // Close drawer first, then logout. AuthGate will react and show HomePage.
+                  Navigator.pop(context);
                   await context.read<AuthService>().logout();
                 },
               ),

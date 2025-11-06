@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
 import '../main.dart';
-import 'register.dart';
-import 'register2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -95,28 +93,6 @@ class _LoginPageState extends State<LoginPage> {
                   navigator.pushReplacement(MaterialPageRoute(builder: (_) => const DashboardPage()));
                 },
                 child: _loading ? const CircularProgressIndicator(color: Colors.white) : Text(loc.getText('login')),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
-                      },
-                      child: Text(loc.getText('register_as_user')),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterAdvocatePage()));
-                      },
-                      child: Text(loc.getText('register_as_advocate')),
-                    ),
-                  ),
-                ],
               ),
               const SizedBox(height: 12),
             ],
