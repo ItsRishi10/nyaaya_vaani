@@ -51,14 +51,14 @@ class HomePage extends StatelessWidget {
 													borderRadius: BorderRadius.circular(24),
 												),
 												child: const Center(
-													child: Icon(Icons.person_search, size: 120, color: Colors.orangeAccent),
+													child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 120, color: Colors.orangeAccent),
 												),
 											),
 										),
 										const SizedBox(height: 24),
 										Text(
 											loc.getText('discover_title'),
-											style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
+											style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.orangeAccent),
 										),
 										const SizedBox(height: 12),
 										Text(
@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
 											flex: 2,
 											child: ElevatedButton(
 												style: ElevatedButton.styleFrom(
-													backgroundColor: primary,
+													backgroundColor: Colors.orangeAccent,
 													foregroundColor: Colors.white,
 													padding: const EdgeInsets.symmetric(vertical: 14),
 													shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -98,7 +98,7 @@ class HomePage extends StatelessWidget {
 												children: [
 													ElevatedButton(
 														style: ElevatedButton.styleFrom(
-															backgroundColor: primary,
+															backgroundColor: Colors.orangeAccent,
 															foregroundColor: Colors.white,
 															padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
 															shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -111,7 +111,7 @@ class HomePage extends StatelessWidget {
 													const SizedBox(height: 8),
 													ElevatedButton(
 														style: ElevatedButton.styleFrom(
-															backgroundColor: primary,
+															backgroundColor: Colors.orangeAccent,
 															foregroundColor: Colors.white,
 															padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
 															shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
