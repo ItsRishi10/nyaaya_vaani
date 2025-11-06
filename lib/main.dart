@@ -828,14 +828,14 @@ class StatisticsPage extends StatelessWidget {
           icon: const FaIcon(FontAwesomeIcons.arrowLeft),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text("Bihar Elections Opinion Poll"),
+        title: Text(loc.getText("statistics")),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
             const Text(
-              "Latest Opinion Poll (2025)",
+              "Bihar Elections Opinion Poll",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
