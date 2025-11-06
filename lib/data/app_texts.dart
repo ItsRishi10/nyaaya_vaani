@@ -108,8 +108,8 @@ const Map<String, String> appEnglishTexts = {
   "invalid_credentials": "Invalid credentials",
 
   // Home / promotional
-  "discover_title": "Discover Your\nDream Job here",
-  "discover_subtitle": "Explore all the existing job roles based on your interest and study major",
+  "Title": "Discover Your\nDream Job here",
+  "Subtitle": "Explore all the existing job roles based on your interest and study major",
 
   "L1" : "Companies Act 2013",
   "L2" : "Consumer Protection Act",

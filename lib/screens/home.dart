@@ -56,12 +56,12 @@ class HomePage extends StatelessWidget {
 										),
 										const SizedBox(height: 24),
 										Text(
-											loc.getText('discover_title'),
+											loc.getText('Title'),
 											style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.orangeAccent),
 										),
 										const SizedBox(height: 12),
 										Text(
-											loc.getText('discover_subtitle'),
+											loc.getText('Subtitle'),
 											style: const TextStyle(fontSize: 14, color: Colors.black54),
 										),
 									],
