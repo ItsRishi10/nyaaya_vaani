@@ -12,7 +12,6 @@ class HomePage extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		final loc = context.watch<AppLocalizations>();
-		final primary = Theme.of(context).colorScheme.primary;
 		return Scaffold(
 			backgroundColor: const Color(0xFFFAF2EC),
 			body: SafeArea(
