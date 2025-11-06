@@ -49,12 +49,17 @@ const Map<String, String> appEnglishTexts = {
   "upload_image_feature_coming_soon": "Upload image feature coming soon",
 
   // Statistics Module
-  "poll_results": "Poll Results",
+  "poll_results": "Poll Results (in %)",
   "sentiment_analysis": "Sentiment Analysis",
   "ai_prediction": "AI Prediction: Public opinion likely to shift towards SUPPORT.",
   "oppose": "Oppose",
   "support": "Support",
   "ai_analysis": "AI Prediction: The NDA alliance is projected to lead in the Bihar elections, driven by strong performances in Patna, Nalanda, and north-central regions. The RJD-led bloc remains influential but trails slightly in voter sentiment.",
+  "st_title": "Bihar Elections Opinion Poll",
+  "st_description": "As per the latest opinion poll data, the NDA alliance is showing stronger support across several key regions, while the RJD-led alliance remains competitive. Smaller regional parties still hold a modest share.",
+  "nda": "NDA",
+  "rjd+": "RJD+",
+  "others": "Others",
 
   // Youth Association Module
   "upcoming_events": "Upcoming Events",

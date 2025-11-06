@@ -358,26 +358,42 @@ class LegalServicesPage extends StatefulWidget {
 class _LegalServicesPageState extends State<LegalServicesPage> {
   final List<Map<String, dynamic>> lawyers = [
     {
-      "name": "Adv. Rohan Sharma",
-      "specialization": "Civil Law",
+      "name": "Adv. Radhika Madhusoodhanan",
+      "specialization": "Criminal Law",
+      "enrollment": "KAR/2864/99",
       "rating": 4.5,
-      "reviews": [
-        {"user": "Amit", "rating": 5.0, "comment": "Very helpful and professional."},
-        {"user": "Priya", "rating": 4.0, "comment": "Guided me well in my case."},
-      ],
-      "showReviews": false,
-    },
-    {
-      "name": "Adv. Neha Gupta",
-      "specialization": "Family Law",
-      "rating": 4.0,
       "reviews": [],
       "showReviews": false,
     },
     {
-      "name": "Adv. Amit Verma",
-      "specialization": "Property Law",
+      "name": "Adv. Aravindan K",
+      "specialization": "Civil Law",
+      "enrollment": "KAR/3865/99",
+      "rating": 4.6,
+      "reviews": [],
+      "showReviews": false,
+    },
+    {
+      "name": "Adv. D.CHELLAKANNAN",
+      "specialization": "Criminal Law",
+      "enrollment": "TN/1999/2016",
       "rating": 3.8,
+      "reviews": [],
+      "showReviews": false,
+    },
+    {
+      "name": "Adv. K.RADHAKRISHNAN",
+      "specialization": "Family Law",
+      "enrollment": "TN/1094/1983",
+      "rating": 4.3,
+      "reviews": [],
+      "showReviews": false,
+    },
+    {
+      "name": "Adv. R.VASANTHA",
+      "specialization": "Contract Law",
+      "enrollment": "TN/29/1988",
+      "rating": 4.0,
       "reviews": [],
       "showReviews": false,
     },
@@ -834,18 +850,17 @@ class StatisticsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            const Text(
-              "Bihar Elections Opinion Poll",
+            Text(
+              loc.getText("st_title"),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            const Text(
-              "As per the latest opinion poll data, the NDA alliance is showing stronger support across several key regions, "
-              "while the RJD-led alliance remains competitive. Smaller regional parties still hold a modest share.",
+            Text(
+              loc.getText("st_description"),
               style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 20),
-            const Text("Poll Results (in %)"),
+            Text(loc.getText("poll_results")),
             SizedBox(
               height: 250,
               child: BarChart(
@@ -888,7 +903,7 @@ class StatisticsPage extends StatelessWidget {
                 PieChartData(
                   sections: [
                     PieChartSectionData(
-                      title: "NDA (45%)",
+                      title: ("${loc.getText("nda")} ${('45%')}"),
                       value: 45,
                       color: Colors.orange,
                       radius: 60,
@@ -899,7 +914,7 @@ class StatisticsPage extends StatelessWidget {
                       ),
                     ),
                     PieChartSectionData(
-                      title: "RJD+ (40%)",
+                      title: ("${loc.getText("rjd+")} ${('40%')}"),
                       value: 40,
                       color: Colors.green,
                       radius: 60,
@@ -910,7 +925,7 @@ class StatisticsPage extends StatelessWidget {
                       ),
                     ),
                     PieChartSectionData(
-                      title: "Others (15%)",
+                      title: ("${loc.getText("others")} ${('15%')}"),
                       value: 15,
                       color: Colors.blueGrey,
                       radius: 60,
