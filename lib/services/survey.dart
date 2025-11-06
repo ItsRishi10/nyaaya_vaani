@@ -156,7 +156,10 @@ class _SurveyPageState extends State<SurveyPage> {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),
                               child: DropdownButtonFormField<String>(
-                                  decoration: InputDecoration(labelText: displayLabel),
+                                  decoration: InputDecoration(
+                                    labelText: displayLabel,
+                                    suffixIcon: const FaIcon(FontAwesomeIcons.angleDown), // Downward arrow
+                                  ),
                                   initialValue: _mcqAnswers[i],
                                   items: opts.map((o) {
                                     final optLabel = loc.englishTexts.containsKey(o) ? loc.getText(o) : o;
