@@ -981,7 +981,7 @@ class YouthPage extends StatelessWidget {
   YouthPage({super.key});
   // Separate lists for past and upcoming events. Past events use key 'old_title' to differentiate.
   final List<Map<String, String>> pastEvents = [
-    {"old_title": "Online Youth Parliament", "date": "Oct 31, 2025", "agenda": "Deliberating on the Delimitation of Lok Sabha Constituencies. Best Delegate was won by Shreyansu Mishra and received 80 points"},
+    {"old_title": "Online Youth Parliament", "date": "Oct 31, 2025", "agenda": "Deliberating on the Delimitation of Lok Sabha Constituencies. Best Delegate was won by Shreyansu Mishra and received 80 points", "pdf_url": "https://ia601207.us.archive.org/20/items/nyaaya_vaani/Resolution.pdf"},
   ];
 
   final List<Map<String, String>> upcomingEvents = [
@@ -1009,6 +1009,18 @@ class YouthPage extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ...pastEvents.map((e) {
               final title = e['old_title'] ?? '';
+              final pdf = e['pdf_url'];
+              // local helper to open pdf; captures context and loc
+              Future<void> _openPdf(String url) async {
+                final Uri uri = Uri.parse(url);
+                if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(loc.getText("could_not_open_pdf"))),
+                  );
+                }
+              }
+
               return Card(
                 child: ListTile(
                   leading: FaIcon(FontAwesomeIcons.calendarDay),
@@ -1024,6 +1036,13 @@ class YouthPage extends StatelessWidget {
                       ),
                     ],
                   ),
+                  trailing: pdf != null
+                      ? IconButton(
+                          tooltip: loc.getText("open_pdf"),
+                          icon: FaIcon(FontAwesomeIcons.download),
+                          onPressed: () => _openPdf(pdf),
+                        )
+                      : null,
                 ),
               );
             }),
