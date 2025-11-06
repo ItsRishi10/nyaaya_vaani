@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart'; // NEW for state management
 import 'services/auth_service.dart';
 import 'services/translation_service.dart';
+import 'services/survey.dart';
 import 'screens/home.dart';
 import 'widgets/side_nav.dart';
 import 'data/app_texts.dart'; // Import English texts from separate file
@@ -900,6 +901,14 @@ class StatisticsPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(loc.getText("ai_prediction")),
+            SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (ctx) => const SurveyPage()));
+              },
+              icon: FaIcon(FontAwesomeIcons.list),
+              label: Text(loc.getText('survey')),
+            ),
           ],
         ),
       ),

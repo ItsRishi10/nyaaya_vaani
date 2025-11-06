@@ -1,3 +1,4 @@
+library;
 /// English texts for the app
 /// 
 /// This file contains all English text strings used in the app.
@@ -110,6 +111,7 @@ const Map<String, String> appEnglishTexts = {
   // Home / promotional
   "Subtitle": "Speak - Act - Transform",
 
+  // Legal Library - Laws
   "L1" : "Companies Act 2013",
   "L2" : "Consumer Protection Act",
   "L3" : "",
@@ -139,6 +141,10 @@ const Map<String, String> appEnglishTexts = {
   "L27" : "",
   "L28" : "",
   "L29" : "",
+
+  //Survey
+  "survey": "Survey",
+  "enter_answer": "Enter answer",
 
   // Example:
   // "welcome_message": "Welcome to Nyaaya Vaani",
