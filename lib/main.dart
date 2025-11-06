@@ -925,10 +925,8 @@ class StatisticsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              "AI Prediction: The NDA alliance is projected to lead in the Bihar elections, "
-              "driven by strong performances in Patna, Nalanda, and north-central regions. "
-              "The RJD-led bloc remains influential but trails slightly in voter sentiment.",
+            Text(
+              loc.getText("ai_analysis"),
               style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 20),
@@ -972,9 +970,9 @@ class YouthPage extends StatelessWidget {
   ];
 
   final List<Map<String, String>> upcomingEvents = [
-    {"title": "Clean City Drive", "date": "Oct 5, 2025", "agenda": "Spreading awareness in your street by door to door campaigns. Best performer:40 points in gamification"},
-    {"title": "Tree Plantation", "date": "Oct 12, 2025", "agenda": "Planting trees in urban areas to promote green cover"},
-    {"title": "Online Civic Awareness Workshop", "date": "Oct 20, 2025", "agenda": "Seminar by Pranav Suchindran on Role of MUN's and Debates in upskilling public speaking skills"},
+    {"title": "Clean City Drive", "date": "Nov 16, 2025", "agenda": "Spreading awareness in your street by door to door campaigns. Best performer:40 points in gamification"},
+    {"title": "Essay Writing Competition", "date": "Nov 26, 2025", "agenda": "Agenda: Integrating Sustainable development with rapid Industrial Growth. Best performer : 30 points"},
+    {"title": "Online Civic Awareness Workshop", "date": "Nov 29, 2025", "agenda": "Seminar by Pranav Suchindran on Role of MUN's and Debates in upskilling public speaking skills"},
   ];
 
   @override
@@ -1010,13 +1008,6 @@ class YouthPage extends StatelessWidget {
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
-                  ),
-                  trailing: ElevatedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${loc.getText("signed_up_for")} $title")));
-                    },
-                    child: Text(loc.getText("join")),
                   ),
                 ),
               );
