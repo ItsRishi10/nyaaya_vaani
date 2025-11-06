@@ -11,6 +11,7 @@ import 'package:provider/provider.dart'; // NEW for state management
 import 'services/auth_service.dart';
 import 'services/translation_service.dart';
 import 'screens/login.dart';
+import 'screens/home.dart';
 import 'widgets/side_nav.dart';
 import 'data/app_texts.dart'; // Import English texts from separate file
 
@@ -160,7 +161,8 @@ class NyaayaVaaniApp extends StatelessWidget {
           backgroundColor: Colors.orange,
         ),
       ),
-      home: AuthGate(),
+  // Start the app at HomePage by default as requested.
+  home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

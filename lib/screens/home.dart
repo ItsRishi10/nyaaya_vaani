@@ -76,17 +76,30 @@ class HomePage extends StatelessWidget {
 											child: Column(
 												crossAxisAlignment: CrossAxisAlignment.start,
 												children: [
-													TextButton(
+													ElevatedButton(
+														style: ElevatedButton.styleFrom(
+															backgroundColor: primary,
+															foregroundColor: Colors.white,
+															padding: const EdgeInsets.symmetric(vertical: 12),
+															shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+														),
 														onPressed: () {
 															Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
 														},
-														child: const Text('Register as a User', style: TextStyle(fontSize: 16, color: Colors.black87)),
+														child: const Text('Register as a User', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
 													),
-													TextButton(
+													const SizedBox(height: 8),
+													ElevatedButton(
+														style: ElevatedButton.styleFrom(
+															backgroundColor: primary,
+															foregroundColor: Colors.white,
+															padding: const EdgeInsets.symmetric(vertical: 12),
+															shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+														),
 														onPressed: () {
 															Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterAdvocatePage()));
 														},
-														child: const Text('Register as an Advocate', style: TextStyle(fontSize: 16, color: Colors.black87)),
+														child: const Text('Register as an Advocate', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
 													),
 												],
 											),
