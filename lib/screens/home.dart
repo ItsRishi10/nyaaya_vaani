@@ -56,7 +56,7 @@ class HomePage extends StatelessWidget {
 										),
 										const SizedBox(height: 24),
 										Text(
-											loc.getText('Title'),
+											loc.getText('app_title'),
 											style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.orangeAccent),
 										),
 										const SizedBox(height: 12),
