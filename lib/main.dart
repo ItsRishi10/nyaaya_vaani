@@ -386,7 +386,9 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
       "specialization": "Family Law",
       "enrollment": "TN/1094/1983",
       "rating": 4.3,
-      "reviews": [],
+      "reviews": [
+        {}
+      ],
       "showReviews": false,
     },
     {
@@ -394,7 +396,9 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
       "specialization": "Contract Law",
       "enrollment": "TN/29/1988",
       "rating": 4.0,
-      "reviews": [],
+      "reviews": [
+        {"user": "CS.Suchindran","comment":"Good Service","rating": 4.2}
+      ],
       "showReviews": false,
     },
   ];
@@ -987,13 +991,13 @@ class YouthPage extends StatelessWidget {
   YouthPage({super.key});
   // Separate lists for past and upcoming events. Past events use key 'old_title' to differentiate.
   final List<Map<String, String>> pastEvents = [
-    {"old_title": "Online Youth Parliament", "date": "Oct 31, 2025", "agenda": "Deliberating on the Delimitation of Lok Sabha Constituencies. Best Delegate was won by Shreyansu Mishra and received 80 points", "pdf_url": "https://ia601207.us.archive.org/20/items/nyaaya_vaani/Resolution.pdf"},
+    {"old_title": "Online Youth Parliament", "date": "Oct 31, 2025", "Agenda": "Deliberating on the Delimitation of Lok Sabha Constituencies. Best Delegate was won by Shreyansu Mishra and received 80 points", "pdf_url": "https://ia601207.us.archive.org/20/items/nyaaya_vaani/Resolution.pdf"},
   ];
 
   final List<Map<String, String>> upcomingEvents = [
-    {"title": "Clean City Drive", "date": "Nov 16, 2025", "agenda": "Spreading awareness in your street by door to door campaigns. Best performer:40 points in gamification"},
-    {"title": "Essay Writing Competition", "date": "Nov 26, 2025", "agenda": "Agenda: Integrating Sustainable development with rapid Industrial Growth. Best performer : 30 points"},
-    {"title": "Online Civic Awareness Workshop", "date": "Nov 29, 2025", "agenda": "Seminar by Pranav Suchindran on Role of MUN's and Debates in upskilling public speaking skills"},
+    {"title": "Clean City Drive", "date": "Nov 16, 2025", "Agenda": "Spreading awareness in your street by door to door campaigns. Best performer:40 points in gamification"},
+    {"title": "Essay Writing Competition", "date": "Nov 26, 2025", "Agenda": "Integrating Sustainable development with rapid Industrial Growth. Best performer : 30 points"},
+    {"title": "Online Civic Awareness Workshop", "date": "Nov 29, 2025", "Agenda": "Seminar by Pranav Suchindran on Role of MUN's and Debates in upskilling public speaking skills"},
   ];
 
   @override
@@ -1017,7 +1021,7 @@ class YouthPage extends StatelessWidget {
               final title = e['old_title'] ?? '';
               final pdf = e['pdf_url'];
               // local helper to open pdf; captures context and loc
-              Future<void> _openPdf(String url) async {
+              Future<void> open_pdf(String url) async {
                 final Uri uri = Uri.parse(url);
                 if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
                   if (!context.mounted) return;
@@ -1037,7 +1041,7 @@ class YouthPage extends StatelessWidget {
                       Text("${loc.getText("date")} ${e["date"]}"),
                       SizedBox(height: 8),
                       Text(
-                        "${loc.getText("agenda")}: ${e["agenda"]}",
+                        "${loc.getText("Agenda")}: ${e["Agenda"]}",
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -1046,7 +1050,7 @@ class YouthPage extends StatelessWidget {
                       ? IconButton(
                           tooltip: loc.getText("open_pdf"),
                           icon: FaIcon(FontAwesomeIcons.download),
-                          onPressed: () => _openPdf(pdf),
+                          onPressed: () => open_pdf(pdf),
                         )
                       : null,
                 ),
