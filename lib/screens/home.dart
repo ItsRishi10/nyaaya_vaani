@@ -50,8 +50,12 @@ class HomePage extends StatelessWidget {
 								color: Colors.white,
 								borderRadius: BorderRadius.circular(24),
 							),
-							child: const Center(
-								//child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 120, color: Colors.orangeAccent),
+							child: Center(
+								child: Image.asset(
+									'assets/images/home_page.png',
+									fit: BoxFit.contain,
+									height: 180,
+								),
 							),
 						),
 					),

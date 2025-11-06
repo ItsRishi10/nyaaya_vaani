@@ -41,6 +41,10 @@ flutter:
         - asset: fonts/MaterialIcons-Regular.ttf
   # generate: true  # Removed - using Google ML Kit translation instead of ARB files
 
+  # App image assets
+  assets:
+    - assets/home_page.png
+
 flutter_launcher_icons:
   android: true
   ios: true

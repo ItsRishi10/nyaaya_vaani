@@ -151,7 +151,7 @@ class NyaayaVaaniApp extends StatelessWidget {
   const NyaayaVaaniApp({super.key});
   @override
   Widget build(BuildContext context) {
-    final loc = context.watch<AppLocalizations>();
+  final loc = context.read<AppLocalizations>();
     return MaterialApp(
       title: loc.getText("app_title"),
       theme: ThemeData(
@@ -505,6 +505,12 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
                                   style: const TextStyle(fontSize: 14),
                                   overflow: TextOverflow.ellipsis,
                                 ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  lawyer["enrollment"],
+                                  style: const TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                )
                               ],
                             ),
                           ),
