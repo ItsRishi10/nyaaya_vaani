@@ -50,7 +50,7 @@ class HomePage extends StatelessWidget {
 													borderRadius: BorderRadius.circular(24),
 												),
 												child: const Center(
-													child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 120, color: Colors.orangeAccent),
+													//child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 120, color: Colors.orangeAccent),
 												),
 											),
 										),
