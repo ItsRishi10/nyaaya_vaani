@@ -83,6 +83,34 @@ const Map<String, String> appEnglishTexts = {
   // ADD YOUR NEW ENGLISH TEXTS BELOW THIS LINE
   // ============================================
 
+  // Common UI
+  "login": "Login",
+  "register": "Register",
+  "register_as_user": "Register as a User",
+  "register_as_advocate": "Register as an Advocate",
+  "email": "Email",
+  "username": "Username",
+  "password": "Password",
+  "phone_number": "Phone Number",
+  "aadhar_number": "Aadhar Number",
+  "advocate_enrollment_number": "Advocate Enrollment Number",
+  "enter_email": "Enter email",
+  "enter_username": "Enter username",
+  "enter_password": "Enter password",
+  "enter_phone_number": "Enter phone number",
+  "enter_aadhar_number": "Enter Aadhar number",
+  "enter_enrollment_number": "Enter enrollment number",
+  "user_already_exists": "User already exists",
+  "registration_submitted": "Registration submitted",
+  "registration_created_advocate": "Your advocate registration is created.",
+
+  "ok": "OK",
+  "invalid_credentials": "Invalid credentials",
+
+  // Home / promotional
+  "discover_title": "Discover Your\nDream Job here",
+  "discover_subtitle": "Explore all the existing job roles based on your interest and study major",
+
   "L1" : "Companies Act 2013",
   "L2" : "Consumer Protection Act",
   "L3" : "",

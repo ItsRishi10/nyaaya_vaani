@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
+import '../main.dart';
+import 'register.dart';
+import 'register2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -20,13 +23,27 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalizations>();
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: FaIcon(FontAwesomeIcons.arrowLeft),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Login')
+        title: Text(loc.getText('login')),
+        actions: [
+          IconButton(
+            icon: loc.isTranslating
+                ? const SizedBox(
+                    width: 20, 
+                    height: 20, 
+                    child: CircularProgressIndicator(strokeWidth: 2)
+                  )
+                : FaIcon(FontAwesomeIcons.globe),
+            onPressed: loc.isTranslating ? null : () => context.read<AppLocalizations>().toggleLanguage(),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -37,15 +54,15 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               TextFormField(
                 controller: _username,
-                decoration: const InputDecoration(labelText: 'Username'),
-                validator: (v) => (v ?? '').isEmpty ? 'Enter username' : null,
+                decoration: InputDecoration(labelText: loc.getText('username')),
+                validator: (v) => (v ?? '').isEmpty ? loc.getText('enter_username') : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _password,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: loc.getText('password'),
                   suffixIcon: IconButton(
                     icon: FaIcon(
                       _obscurePassword
@@ -56,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
                 ),
-                validator: (v) => (v ?? '').isEmpty ? 'Enter password' : null,
+                validator: (v) => (v ?? '').isEmpty ? loc.getText('enter_password') : null,
               ),
               const SizedBox(height: 16),
               if (_error != null)
@@ -66,15 +83,40 @@ class _LoginPageState extends State<LoginPage> {
                   if (!_formKey.currentState!.validate()) return;
                   setState(() { _loading = true; _error = null; });
                   final auth = context.read<AuthService>();
+                  final navigator = Navigator.of(context);
                   final ok = await auth.login(_username.text.trim(), _password.text);
                   setState(() { _loading = false; });
                   if (!ok) {
-                    setState(() { _error = 'Invalid credentials'; });
+                    setState(() { _error = loc.getText('invalid_credentials'); });
                     return;
                   }
-                  // on success, Navigator will be handled by listening provider in the app
+                  // on success, navigate to DashboardPage directly since Home is not the auth-gate
+                  if (!mounted) return;
+                  navigator.pushReplacement(MaterialPageRoute(builder: (_) => const DashboardPage()));
                 },
-                child: _loading ? CircularProgressIndicator(color: Colors.white) : const Text('Login'),
+                child: _loading ? const CircularProgressIndicator(color: Colors.white) : Text(loc.getText('login')),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
+                      },
+                      child: Text(loc.getText('register_as_user')),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterAdvocatePage()));
+                      },
+                      child: Text(loc.getText('register_as_advocate')),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
             ],

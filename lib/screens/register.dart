@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
+import '../main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -29,7 +30,21 @@ class _RegisterPageState extends State<RegisterPage> {
           icon: FaIcon(FontAwesomeIcons.arrowLeft),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Register')
+        title: Text(context.watch<AppLocalizations>().getText('register')),
+        actions: [
+          IconButton(
+            icon: context.watch<AppLocalizations>().isTranslating
+                ? const SizedBox(
+                    width: 20, 
+                    height: 20, 
+                    child: CircularProgressIndicator(strokeWidth: 2)
+                  )
+                : FaIcon(FontAwesomeIcons.globe),
+            onPressed: context.watch<AppLocalizations>().isTranslating
+                ? null
+                : () => context.read<AppLocalizations>().toggleLanguage(),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -40,22 +55,22 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               TextFormField(
                 controller: _email,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: context.read<AppLocalizations>().getText('email')),
                 keyboardType: TextInputType.emailAddress,
-                validator: (v) => (v ?? '').isEmpty ? 'Enter email' : null,
+                validator: (v) => (v ?? '').isEmpty ? context.read<AppLocalizations>().getText('enter_email') : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _username,
-                decoration: const InputDecoration(labelText: 'Username'),
-                validator: (v) => (v ?? '').isEmpty ? 'Enter username' : null,
+                decoration: InputDecoration(labelText: context.read<AppLocalizations>().getText('username')),
+                validator: (v) => (v ?? '').isEmpty ? context.read<AppLocalizations>().getText('enter_username') : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _password,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: context.read<AppLocalizations>().getText('password'),
                   suffixIcon: IconButton(
                     icon: FaIcon(
                       _obscurePassword 
@@ -66,21 +81,21 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
                 ),
-                validator: (v) => (v ?? '').isEmpty ? 'Enter password' : null,
+                validator: (v) => (v ?? '').isEmpty ? context.read<AppLocalizations>().getText('enter_password') : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _phone,
-                decoration: const InputDecoration(labelText: 'Phone Number'),
+                decoration: InputDecoration(labelText: context.read<AppLocalizations>().getText('phone_number')),
                 keyboardType: TextInputType.phone,
-                validator: (v) => (v ?? '').isEmpty ? 'Enter phone number' : null,
+                validator: (v) => (v ?? '').isEmpty ? context.read<AppLocalizations>().getText('enter_phone_number') : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _aadhar,
-                decoration: const InputDecoration(labelText: 'Aadhar Number'),
+                decoration: InputDecoration(labelText: context.read<AppLocalizations>().getText('aadhar_number')),
                 keyboardType: TextInputType.number,
-                validator: (v) => (v ?? '').isEmpty ? 'Enter Aadhar number' : null,
+                validator: (v) => (v ?? '').isEmpty ? context.read<AppLocalizations>().getText('enter_aadhar_number') : null,
               ),
               const SizedBox(height: 12),
               if (_error != null)
@@ -103,13 +118,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   if (!mounted) return;
                   setState(() { _loading = false; });
                   if (!ok) {
-                    setState(() { _error = 'User already exists'; });
+                    setState(() { _error = context.read<AppLocalizations>().getText('user_already_exists'); });
                     return;
                   }
                   // auto-logged in after register; pop back
                   navigator.pop();
                 },
-                child: _loading ? CircularProgressIndicator(color: Colors.white) : const Text('Register'),
+                child: _loading ? const CircularProgressIndicator(color: Colors.white) : Text(context.watch<AppLocalizations>().getText('register')),
               ),
             ],
           ),

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../main.dart';
 import 'login.dart';
 import 'register.dart';
 import 'register2.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatelessWidget {
 	const HomePage({super.key});
 
 	@override
 	Widget build(BuildContext context) {
+		final loc = context.watch<AppLocalizations>();
 		final primary = Theme.of(context).colorScheme.primary;
 		return Scaffold(
 			backgroundColor: const Color(0xFFFAF2EC),
@@ -16,6 +20,22 @@ class HomePage extends StatelessWidget {
 					padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
 					child: Column(
 						children: [
+							// top row: language toggle on the right
+							Row(
+								children: [
+									const Spacer(),
+									IconButton(
+										icon: loc.isTranslating
+											  ? const SizedBox(
+                            width: 20, 
+                            height: 20, 
+                            child: CircularProgressIndicator(strokeWidth: 2)
+                          )
+											  : FaIcon(FontAwesomeIcons.globe),
+										onPressed: loc.isTranslating ? null : () => context.read<AppLocalizations>().toggleLanguage(),
+									),
+								],
+							),
 							Expanded(
 								child: Column(
 									crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,14 +56,14 @@ class HomePage extends StatelessWidget {
 											),
 										),
 										const SizedBox(height: 24),
-										const Text(
-											'Discover Your\nDream Job here',
-											style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
+										Text(
+											loc.getText('discover_title'),
+											style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
 										),
 										const SizedBox(height: 12),
-										const Text(
-											'Explore all the existing job roles based on your interest and study major',
-											style: TextStyle(fontSize: 14, color: Colors.black54),
+										Text(
+											loc.getText('discover_subtitle'),
+											style: const TextStyle(fontSize: 14, color: Colors.black54),
 										),
 									],
 								),
@@ -67,7 +87,7 @@ class HomePage extends StatelessWidget {
 												onPressed: () {
 													Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginPage()));
 												},
-												child: const Text('Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+												child: Text(loc.getText('login'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
 											),
 										),
 										const SizedBox(width: 12),
@@ -80,26 +100,26 @@ class HomePage extends StatelessWidget {
 														style: ElevatedButton.styleFrom(
 															backgroundColor: primary,
 															foregroundColor: Colors.white,
-															padding: const EdgeInsets.symmetric(vertical: 12),
+															padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
 															shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
 														),
 														onPressed: () {
 															Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
 														},
-														child: const Text('Register as a User', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+														child: Text(loc.getText('register_as_user'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
 													),
 													const SizedBox(height: 8),
 													ElevatedButton(
 														style: ElevatedButton.styleFrom(
 															backgroundColor: primary,
 															foregroundColor: Colors.white,
-															padding: const EdgeInsets.symmetric(vertical: 12),
+															padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
 															shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
 														),
 														onPressed: () {
 															Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterAdvocatePage()));
 														},
-														child: const Text('Register as an Advocate', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+														child: Text(loc.getText('register_as_advocate'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
 													),
 												],
 											),
