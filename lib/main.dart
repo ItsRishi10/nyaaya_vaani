@@ -825,18 +825,30 @@ class StatisticsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: FaIcon(FontAwesomeIcons.arrowLeft), // FontAwesome back arrow
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(loc.getText("statistics")),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            Text(loc.getText("poll_results"), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              "Bihar Election Model Survey (2025)",
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "Based on the latest model survey, the RJD-led alliance appears ahead, "
+              "while NDA maintains a strong presence. Smaller regional parties and independents "
+              "constitute a notable share of voter preference.",
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 20),
+            const Text("Poll Results (in %)"),
             SizedBox(
-              height: 200,
+              height: 250,
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.spaceAround,
@@ -847,66 +859,87 @@ class StatisticsPage extends StatelessWidget {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          switch (value.toInt()) {
-                            case 0:
-                              return Text(loc.getText("support"));
-                            case 1:
-                              return Text(loc.getText("oppose"));
-                            default:
-                              return const Text("");
-                          }
-                        },
+                        getTitlesWidget: _bottomTitles,
                       ),
                     ),
                   ),
                   borderData: FlBorderData(show: false),
                   barGroups: [
                     BarChartGroupData(x: 0, barRods: [
-                      BarChartRodData(toY: 70, color: Colors.green, width: 30)
+                      BarChartRodData(toY: 42, color: Colors.green, width: 30),
                     ]),
                     BarChartGroupData(x: 1, barRods: [
-                      BarChartRodData(toY: 30, color: Colors.red, width: 30)
+                      BarChartRodData(toY: 38, color: Colors.orange, width: 30),
+                    ]),
+                    BarChartGroupData(x: 2, barRods: [
+                      BarChartRodData(toY: 20, color: Colors.blueGrey, width: 30),
                     ]),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 30),
-            Text(loc.getText("sentiment_analysis"), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 30),
+            Text(
+              loc.getText("sentiment_analysis"),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             SizedBox(
-              height: 200,
+              height: 220,
               child: PieChart(
                 PieChartData(
                   sections: [
                     PieChartSectionData(
-                      title: "${loc.getText("support")}\n70%",
-                      value: 70,
+                      title: "RJD+ (42%)",
+                      value: 42,
                       color: Colors.green,
                       radius: 60,
-                      titleStyle: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                      titleStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                     PieChartSectionData(
-                      title: "${loc.getText("oppose")}\n30%",
-                      value: 30,
-                      color: Colors.red,
+                      title: "NDA (38%)",
+                      value: 38,
+                      color: Colors.orange,
                       radius: 60,
-                      titleStyle: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                      titleStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    PieChartSectionData(
+                      title: "Others (20%)",
+                      value: 20,
+                      color: Colors.blueGrey,
+                      radius: 60,
+                      titleStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            Text(loc.getText("ai_prediction")),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            Text(
+              "AI Prediction: RJD+ is likely to maintain a lead if current voter sentiment continues, "
+              "but close competition with NDA expected in swing regions like Patna and Muzaffarpur.",
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (ctx) => const SurveyPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (ctx) => const SurveyPage()),
+                );
               },
-              icon: FaIcon(FontAwesomeIcons.list),
+              icon: const FaIcon(FontAwesomeIcons.list),
               label: Text(loc.getText('survey')),
             ),
           ],
@@ -914,7 +947,21 @@ class StatisticsPage extends StatelessWidget {
       ),
     );
   }
+
+  static Widget _bottomTitles(double value, TitleMeta meta) {
+    switch (value.toInt()) {
+      case 0:
+        return const Text("RJD+");
+      case 1:
+        return const Text("NDA");
+      case 2:
+        return const Text("Others");
+      default:
+        return const Text("");
+    }
+  }
 }
+
 
 // ----------------- Youth Association -----------------
 class YouthPage extends StatelessWidget {
