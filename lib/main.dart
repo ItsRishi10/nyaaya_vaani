@@ -966,10 +966,15 @@ class StatisticsPage extends StatelessWidget {
 // ----------------- Youth Association -----------------
 class YouthPage extends StatelessWidget {
   YouthPage({super.key});
-  final List<Map<String, String>> events = [
-    {"title": "Clean City Drive", "date": "Oct 5, 2025"},
-    {"title": "Tree Plantation", "date": "Oct 12, 2025"},
-    {"title": "Civic Awareness Workshop", "date": "Oct 20, 2025"},
+  // Separate lists for past and upcoming events. Past events use key 'old_title' to differentiate.
+  final List<Map<String, String>> pastEvents = [
+    {"old_title": "Online Youth Parliament", "date": "Oct 31, 2025", "agenda": "Deliberating on the Delimitation of Lok Sabha Constituencies. Best Delegate was won by Shreyansu Mishra and received 80 points"},
+  ];
+
+  final List<Map<String, String>> upcomingEvents = [
+    {"title": "Clean City Drive", "date": "Oct 5, 2025", "agenda": "Spreading awareness in your street by door to door campaigns. Best performer:40 points in gamification"},
+    {"title": "Tree Plantation", "date": "Oct 12, 2025", "agenda": "Planting trees in urban areas to promote green cover"},
+    {"title": "Online Civic Awareness Workshop", "date": "Oct 20, 2025", "agenda": "Seminar by Pranav Suchindran on Role of MUN's and Debates in upskilling public speaking skills"},
   ];
 
   @override
@@ -987,22 +992,64 @@ class YouthPage extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: ListView(
           children: [
+            Text(loc.getText("past_events"),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ...pastEvents.map((e) {
+              final title = e['old_title'] ?? '';
+              return Card(
+                child: ListTile(
+                  leading: FaIcon(FontAwesomeIcons.calendarDay),
+                  title: Text(title),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("${loc.getText("date")} ${e["date"]}"),
+                      SizedBox(height: 8),
+                      Text(
+                        "${loc.getText("agenda")}: ${e["agenda"]}",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  trailing: ElevatedButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("${loc.getText("signed_up_for")} $title")));
+                    },
+                    child: Text(loc.getText("join")),
+                  ),
+                ),
+              );
+            }),
             Text(loc.getText("upcoming_events"),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ...events.map((e) => Card(
-                  child: ListTile(
-                    leading: FaIcon(FontAwesomeIcons.calendarDay),
-                    title: Text(e["title"]!),
-                    subtitle: Text("${loc.getText("date")} ${e["date"]}"),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("${loc.getText("signed_up_for")} ${e['title']}")));
-                      },
-                      child: Text(loc.getText("join")),
-                    ),
+            ...upcomingEvents.map((e) {
+              final title = e['title'] ?? '';
+              return Card(
+                child: ListTile(
+                  leading: FaIcon(FontAwesomeIcons.calendarDay),
+                  title: Text(title),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("${loc.getText("date")} ${e["date"]}"),
+                      SizedBox(height: 8),
+                      Text(
+                        "${loc.getText("agenda")}: ${e["agenda"]}",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
                   ),
-                )),
+                  trailing: ElevatedButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("${loc.getText("signed_up_for")} $title")));
+                    },
+                    child: Text(loc.getText("join")),
+                  ),
+                ),
+              );
+            }),
             SizedBox(height: 20),
             Text(loc.getText("gamification"), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             Card(

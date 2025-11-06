@@ -63,6 +63,7 @@ const Map<String, String> appEnglishTexts = {
   "badge": "Badges: Civic Star, Volunteer Hero",
   "date": "Date:",
   "signed_up_for": "Signed up for",
+  "past_events": "Past Events",
 
   // Legal Library Module
   "library_text": "A simplified repository of key Indian legal resources for awareness and learning",
