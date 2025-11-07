@@ -362,7 +362,10 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
       "specialization": "Criminal Law",
       "enrollment": "KAR/2864/99",
       "rating": 4.5,
-      "reviews": [],
+      "reviews": [
+        {"user": "Rahul Mehta","comment": "Handled my case with complete professionalism. Truly impressive work!!","rating": 4.5},
+        {"user": "Sneha D'Souza","comment": "Amazing lawyer who genuinely cares about clients. Strongly recommend!","rating": 4.5}
+      ],
       "showReviews": false,
     },
     {
@@ -370,15 +373,19 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
       "specialization": "Civil Law",
       "enrollment": "KAR/3865/99",
       "rating": 4.6,
-      "reviews": [],
+      "reviews": [
+        {"user": "Anjali Sharma","comment": "Very knowledgeable and supportive throughout the process. Highly recommend!","rating": 4.6}
+      ],
       "showReviews": false,
     },
     {
       "name": "Adv. D.CHELLAKANNAN",
       "specialization": "Criminal Law",
       "enrollment": "TN/1999/2016",
-      "rating": 3.8,
-      "reviews": [],
+      "rating": 4.4,
+      "reviews": [
+        {"user": "Neha Patel","comment": "Extremely efficient and reliable. My legal matter was resolved smoothly.","rating": 4.4}
+      ],
       "showReviews": false,
     },
     {
@@ -387,7 +394,7 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
       "enrollment": "TN/1094/1983",
       "rating": 4.3,
       "reviews": [
-        {}
+        {"user": "Sanjay Gupta","comment": "Quick, smart, and effective - one of the best legal experiences I've had.","rating": 4.3}
       ],
       "showReviews": false,
     },
@@ -397,7 +404,7 @@ class _LegalServicesPageState extends State<LegalServicesPage> {
       "enrollment": "TN/29/1988",
       "rating": 4.0,
       "reviews": [
-        {"user": "CS.Suchindran","comment":"Good Service","rating": 4.2}
+        {"user": "CS.Suchindran","comment": "Good Service","rating": 4.0}
       ],
       "showReviews": false,
     },
@@ -974,11 +981,11 @@ class StatisticsPage extends StatelessWidget {
   static Widget _bottomTitles(double value, TitleMeta meta) {
     switch (value.toInt()) {
       case 0:
-        return const Text("NDA");
+        return Text("NDA");
       case 1:
-        return const Text("RJD+");
+        return Text("RJD+");
       case 2:
-        return const Text("Others");
+        return Text("Others");
       default:
         return const Text("");
     }
@@ -1070,7 +1077,7 @@ class YouthPage extends StatelessWidget {
                       Text("${loc.getText("date")} ${e["date"]}"),
                       SizedBox(height: 8),
                       Text(
-                        "${loc.getText("agenda")}: ${e["agenda"]}",
+                        "${loc.getText("Agenda")}: ${e["Agenda"]}",
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
