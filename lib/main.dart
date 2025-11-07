@@ -237,16 +237,6 @@ class DashboardPage extends StatelessWidget {
                   await context.read<AuthService>().logout();
                 },
               ),
-              // Additional user actions can be added here
-              if (auth.isAdmin)
-                ListTile(
-                  leading: Icon(Icons.admin_panel_settings),
-                  title: Text(loc.getText("admin_panel")),
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.getText("admin_features_coming_soon"))));
-                  },
-                ),
             ],
           ),
         ),
