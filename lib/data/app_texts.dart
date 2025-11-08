@@ -54,7 +54,7 @@ const Map<String, String> appEnglishTexts = {
   "ai_prediction": "AI Prediction: Public opinion likely to shift towards SUPPORT.",
   "oppose": "Oppose",
   "support": "Support",
-  "ai_analysis": "AI Prediction: The NDA alliance is projected to lead in the Bihar elections, driven by strong performances in Patna, Nalanda, and north-central regions. The RJD-led bloc remains influential but trails slightly in voter sentiment.",
+  "ai_analysis": "AI Prediction: The NDA alliance would clean sweep and form a government with clean majority.",
   "st_title": "Bihar Elections Opinion Poll",
   "st_description": "As per the latest opinion poll data, the NDA alliance is showing stronger support across several key regions, while the RJD-led alliance remains competitive. Smaller regional parties still hold a modest share.",
   "nda": "NDA",
