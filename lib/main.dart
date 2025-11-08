@@ -229,7 +229,7 @@ class DashboardPage extends StatelessWidget {
               ),
               const Divider(),
               ListTile(
-                leading: Icon(Icons.logout),
+                leading: FaIcon(FontAwesomeIcons.doorOpen),
                 title: Text(loc.getText("logout")),
                 onTap: () async {
                   // Close drawer first, then logout. AuthGate will react and show HomePage.
