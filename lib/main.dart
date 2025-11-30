@@ -11,7 +11,6 @@ import 'package:provider/provider.dart'; // NEW for state management
 import 'services/auth_service.dart';
 import 'services/translation_service.dart';
 import 'services/survey.dart';
-import 'services/legal_assistant_service.dart';
 import 'screens/home.dart';
 import 'widgets/side_nav.dart';
 import 'data/app_texts.dart'; // Import English texts from separate file
@@ -1334,22 +1333,7 @@ class _AIAssistantPageState extends State<AIAssistantPage> {
   void initState() {
     super.initState();
     // seed welcome message
-    _messages.add({"sender": "ai", "message": "Hi — I'm the Nyaaya Legal Assistant powered by AI. I can help you with legal questions, explain legal concepts, and guide you on legal matters. Ask me anything related to legal services!"});
-    // Check service health on startup
-    _checkServiceHealth();
-  }
-  
-  Future<void> _checkServiceHealth() async {
-    final isHealthy = await LegalAssistantService.checkHealth();
-    if (!isHealthy && mounted) {
-      // Show a warning if service is not available
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Legal assistant service may not be available. Some features might not work.'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-    }
+    _messages.add({"sender": "ai", "message": "Hi — I'm the Nyaaya Assistant. Ask me about the app, complaints, events, or legal help."});
   }
 
   @override
@@ -1359,7 +1343,7 @@ class _AIAssistantPageState extends State<AIAssistantPage> {
     super.dispose();
   }
 
-  Future<void> _sendMessage() async {
+  void _sendMessage() {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
     setState(() {
@@ -1369,26 +1353,39 @@ class _AIAssistantPageState extends State<AIAssistantPage> {
     });
     _scrollToBottomDelayed();
 
-    try {
-      // Call the legal assistant service
-      final reply = await LegalAssistantService.askLegalQuestion(text);
+    // simulate thinking and generate reply
+    Future.delayed(const Duration(milliseconds: 600), () {
+      final reply = _generateResponse(text);
       if (!mounted) return;
       setState(() {
         _messages.add({"sender": "ai", "message": reply});
         _isThinking = false;
       });
       _scrollToBottomDelayed();
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _messages.add({
-          "sender": "ai", 
-          "message": "I apologize, but I encountered an error: ${e.toString()}. Please try again or check if the legal assistant service is running."
-        });
-        _isThinking = false;
-      });
-      _scrollToBottomDelayed();
+    });
+  }
+
+  String _generateResponse(String input) {
+    final q = input.toLowerCase();
+    // quick keyword-based intents
+    if (q.contains('complaint') || q.contains('whistle') || q.contains('report')) {
+      return 'To raise a complaint, open the Nyaaya Whistle module from the dashboard, fill details, mark location on the map and submit.';
     }
+    if (q.contains('volunteer') || q.contains('event') || q.contains('join')) {
+      return 'You can check the Youth Association section for upcoming events and tap Join to sign up.';
+    }
+    if (q.contains('lawyer') || q.contains('advocate')) {
+      return 'Open Legal Services to see available advocates. You can request help or view reviews for each advocate.';
+    }
+    if (q.contains('admin') || q.contains('add lawyer') || q.contains('manage')) {
+      return 'Admin features (like adding lawyers) are available only to admins. Login as an admin to access them.';
+    }
+    if (q.contains('help') || q.contains('how to')) {
+      return 'I can guide you through using the app modules: Nyaaya Whistle (complaints), Legal Services, Youth Association, and Legal Library. Ask about any of them.';
+    }
+
+    // fallback: echo with suggestion
+    return 'I can help with complaints, events, and legal services. For your question: "$input", try asking specifically about complaints, volunteers, or available advocates.';
   }
 
   void _scrollToBottomDelayed() {
