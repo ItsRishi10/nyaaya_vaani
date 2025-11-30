@@ -54,7 +54,7 @@ const Map<String, String> appEnglishTexts = {
   "ai_prediction": "AI Prediction: Public opinion likely to shift towards SUPPORT.",
   "oppose": "Oppose",
   "support": "Support",
-  "ai_analysis": "AI Prediction: The NDA alliance would clean sweep and form a government with clean majority.",
+  "ai_analysis": "As per the AI-based forecast, the NDA alliance is projected to secure a sweeping victory and establish a government with a strong and clear majority.",
   "st_title": "Bihar Elections Opinion Poll",
   "st_description": "As per the latest opinion poll data, the NDA alliance is showing stronger support across several key regions, while the RJD-led alliance remains competitive. Smaller regional parties still hold a modest share.",
   "nda": "NDA",
